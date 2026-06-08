@@ -694,6 +694,7 @@
         <button class="btn secondary admin-only" id="printBtn" type="button">打印</button>
         <button class="btn secondary admin-only" id="exportBtn" type="button">导出</button>
         <button class="btn secondary admin-only" id="importBtn" type="button">导入</button>
+        <button class="btn secondary admin-only" id="syncImagesBtn" type="button">补齐菜品图</button>
         <button class="btn admin-only" id="addDishBtn" type="button">新增菜品</button>
       </div>
     </header>
@@ -1745,6 +1746,175 @@
 
     renderAll();
     loadCloudDishes().then(loadCloudOrders);
+  </script>
+  <script>
+    (() => {
+      const LOCAL_ORDERS_KEY_FIX = "family_private_chef_local_orders_v1";
+
+      const getLocalOrdersFix = () => {
+        try {
+          return JSON.parse(localStorage.getItem(LOCAL_ORDERS_KEY_FIX) || "[]");
+        } catch {
+          return [];
+        }
+      };
+
+      const saveLocalOrdersFix = value => {
+        localStorage.setItem(LOCAL_ORDERS_KEY_FIX, JSON.stringify(value));
+      };
+
+      const mergeOrdersFix = (cloudList, localList) => {
+        const seen = new Set();
+        return [...(cloudList || []), ...(localList || [])].filter(order => {
+          if (!order || seen.has(order.id)) return false;
+          seen.add(order.id);
+          return true;
+        });
+      };
+
+      const makePayloadFix = () => ({
+        customer_name: $("orderName").value.trim() || selectedMember || "家人",
+        meal_time: $("mealTime").value.trim() || "待定",
+        people_count: $("peopleCount").value.trim() || "2人",
+        note: $("orderNote").value.trim() || "",
+        items: [...cart],
+        status: "已下单"
+      });
+
+      const addLocalOrderFix = payload => {
+        const localOrders = getLocalOrdersFix();
+        const order = {
+          id: uuid(),
+          ...payload,
+          created_at: new Date().toISOString(),
+          local_only: true
+        };
+        localOrders.unshift(order);
+        saveLocalOrdersFix(localOrders);
+        orders = mergeOrdersFix(orders, localOrders);
+        renderOrders();
+        renderTodayOrders();
+        renderStats();
+      };
+
+      window.loadCloudOrders = async function patchedLoadCloudOrders() {
+        const localOrders = getLocalOrdersFix();
+        if (!isCloudReady()) {
+          orders = localOrders;
+          renderOrders();
+          renderTodayOrders();
+          renderStats();
+          return;
+        }
+        try {
+          const rows = await cloudRequest("orders?select=*&order=created_at.desc&limit=100");
+          orders = mergeOrdersFix(Array.isArray(rows) ? rows : [], localOrders);
+        } catch {
+          orders = localOrders;
+          showToast("云端订单读取失败，当前显示本机订单");
+        }
+        renderOrders();
+        renderTodayOrders();
+        renderStats();
+      };
+
+      const submitBtn = $("submitOrderBtn");
+      if (submitBtn) {
+        submitBtn.addEventListener("click", async event => {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          if (!cart.length) {
+            showToast("请先选择菜品");
+            return;
+          }
+          const payload = makePayloadFix();
+          if (isCloudReady()) {
+            try {
+              await cloudRequest("orders", {
+                method: "POST",
+                headers: { Prefer: "return=representation" },
+                body: JSON.stringify(payload)
+              });
+              cart = [];
+              saveCart();
+              renderCart();
+              showToast("点单已提交给私厨");
+              await window.loadCloudOrders();
+              return;
+            } catch {}
+          }
+          addLocalOrderFix(payload);
+          cart = [];
+          saveCart();
+          renderCart();
+          showToast("云端未成功保存，已先显示在本机订单");
+        }, true);
+      }
+
+      window.loadCloudOrders();
+    })();
+  </script>
+  <script>
+    (() => {
+      const imageFallbacks = {
+        "菌菇炖鸡": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=80",
+        "清炖排骨": "https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?auto=format&fit=crop&w=900&q=80",
+        "葱爆鲍鱼": "https://images.unsplash.com/photo-1559737558-2f5a35f4523b?auto=format&fit=crop&w=900&q=80",
+        "清蒸鱼": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=900&q=80",
+        "不辣鱼香肉丝": "https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=900&q=80",
+        "红烧肉": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=900&q=80",
+        "可乐鸡翅": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=900&q=80",
+        "西红柿炒蛋": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",
+        "凉拌白菜心": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80",
+        "凉拌皮蛋": "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=900&q=80",
+        "凉拌黄瓜粉皮": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",
+        "青椒炒肉": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=900&q=80",
+        "火锅": "https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=900&q=80",
+        "包子": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=900&q=80",
+        "水饺": "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=900&q=80",
+        "疙瘩汤": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=900&q=80",
+        "炝锅面": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=900&q=80",
+        "鸡蛋饼": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",
+        "蒸蛋": "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=900&q=80",
+        "烤地瓜": "https://images.unsplash.com/photo-1596097635121-14b63b7a0c19?auto=format&fit=crop&w=900&q=80",
+        "杂粮粥": "https://images.unsplash.com/photo-1517673132405-a56a62b18caf?auto=format&fit=crop&w=900&q=80",
+        "寿司": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=900&q=80",
+        "三明治": "https://images.unsplash.com/photo-1481070414801-51fd732d7184?auto=format&fit=crop&w=900&q=80",
+        "卤牛肉": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80",
+        "番茄牛腩": "https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=900&q=80",
+        "羊汤": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=900&q=80"
+      };
+
+      const matchImage = name => {
+        if (imageFallbacks[name]) return imageFallbacks[name];
+        const key = Object.keys(imageFallbacks).find(item => name.includes(item) || item.includes(name));
+        return key ? imageFallbacks[key] : "";
+      };
+
+      async function syncDishImages() {
+        let changed = 0;
+        dishes = dishes.map(item => {
+          const image = item.image || matchImage(item.name);
+          if (image && image !== item.image) changed += 1;
+          return { ...item, image: image || item.image };
+        });
+        saveDishes();
+        renderAll();
+        if (isCloudReady()) {
+          try {
+            await syncLocalDishesToCloud();
+            showToast(changed ? `已补齐 ${changed} 张菜品图并同步云端` : "菜品图已是最新");
+          } catch {
+            showToast(changed ? `已补齐 ${changed} 张菜品图，云端同步失败` : "菜品图已是最新");
+          }
+        } else {
+          showToast(changed ? `已补齐 ${changed} 张菜品图` : "菜品图已是最新");
+        }
+      }
+
+      const syncImagesBtn = document.getElementById("syncImagesBtn");
+      if (syncImagesBtn) syncImagesBtn.addEventListener("click", syncDishImages);
+    })();
   </script>
 </body>
 </html>
