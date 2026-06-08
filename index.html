@@ -583,10 +583,45 @@
       grid-template-columns: 1fr;
     }
 
+    .admin-mode.admin-tab-menu [data-admin-module]:not([data-admin-module="menu"]),
+    .admin-mode.admin-tab-orders [data-admin-module]:not([data-admin-module="orders"]),
+    .admin-mode.admin-tab-stats [data-admin-module]:not([data-admin-module="stats"]) {
+      display: none !important;
+    }
+
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
+    }
+
+    .analytics-hero {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 10px;
+    }
+
+    .analytics-highlight {
+      min-height: 150px;
+      border-radius: 22px;
+      padding: 18px;
+      color: #fff;
+      background:
+        linear-gradient(135deg, rgba(255,122,69,.92), rgba(217,119,6,.82)),
+        radial-gradient(circle at top right, rgba(255,255,255,.28), transparent 30%);
+      box-shadow: 0 18px 44px rgba(255, 122, 69, .22);
+    }
+
+    .analytics-highlight strong {
+      display: block;
+      font-size: 38px;
+      line-height: 1;
+      margin: 8px 0;
+    }
+
+    .analytics-highlight span {
+      color: rgba(255,255,255,.9);
     }
 
     .stat {
@@ -761,6 +796,7 @@
       .hero-actions .btn { flex: 1 1 auto; }
       .toolbar { grid-template-columns: 1fr; }
       .recommend-grid, .dish-grid, .stats-grid { grid-template-columns: 1fr; }
+      .analytics-hero { grid-template-columns: 1fr; }
       .form { grid-template-columns: 1fr; }
       .member-row { grid-template-columns: repeat(2, 1fr); }
     }
@@ -1008,32 +1044,32 @@
     ];
 
     const dishImages = {
-      "菌菇炖鸡": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=80",
-      "清炖排骨": "https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?auto=format&fit=crop&w=900&q=80",
-      "葱爆鲍鱼": "https://images.unsplash.com/photo-1559737558-2f5a35f4523b?auto=format&fit=crop&w=900&q=80",
-      "清蒸鱼": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=900&q=80",
-      "不辣鱼香肉丝": "https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=900&q=80",
-      "红烧肉": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=900&q=80",
-      "可乐鸡翅": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=900&q=80",
-      "西红柿炒蛋": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",
-      "凉拌白菜心": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80",
-      "凉拌皮蛋": "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=900&q=80",
-      "凉拌黄瓜粉皮": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",
-      "青椒炒肉": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=900&q=80",
-      "火锅": "https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=900&q=80",
-      "包子": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=900&q=80",
-      "水饺": "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=900&q=80",
-      "疙瘩汤": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=900&q=80",
-      "炝锅面": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=900&q=80",
-      "鸡蛋饼": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",
-      "蒸蛋": "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=900&q=80",
-      "烤地瓜": "https://images.unsplash.com/photo-1596097635121-14b63b7a0c19?auto=format&fit=crop&w=900&q=80",
-      "杂粮粥": "https://images.unsplash.com/photo-1517673132405-a56a62b18caf?auto=format&fit=crop&w=900&q=80",
-      "寿司": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=900&q=80",
-      "三明治": "https://images.unsplash.com/photo-1481070414801-51fd732d7184?auto=format&fit=crop&w=900&q=80",
-      "卤牛肉": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80",
-      "番茄牛腩": "https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=900&q=80",
-      "羊汤": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=900&q=80"
+      "菌菇炖鸡": "https://loremflickr.com/900/600/chicken,mushroom,stew?lock=101",
+      "清炖排骨": "https://loremflickr.com/900/600/pork,ribs,soup?lock=102",
+      "葱爆鲍鱼": "https://loremflickr.com/900/600/abalone,seafood?lock=103",
+      "清蒸鱼": "https://loremflickr.com/900/600/steamed,fish?lock=104",
+      "不辣鱼香肉丝": "https://loremflickr.com/900/600/shredded,pork,stir-fry?lock=105",
+      "红烧肉": "https://loremflickr.com/900/600/braised,pork,chinese-food?lock=106",
+      "可乐鸡翅": "https://loremflickr.com/900/600/chicken,wings?lock=107",
+      "西红柿炒蛋": "https://loremflickr.com/900/600/tomato,egg,breakfast?lock=108",
+      "凉拌白菜心": "https://loremflickr.com/900/600/cabbage,salad?lock=109",
+      "凉拌皮蛋": "https://loremflickr.com/900/600/century,egg,chinese-food?lock=110",
+      "凉拌黄瓜粉皮": "https://loremflickr.com/900/600/cucumber,salad,noodles?lock=111",
+      "青椒炒肉": "https://loremflickr.com/900/600/pepper,pork,stir-fry?lock=112",
+      "火锅": "https://loremflickr.com/900/600/hotpot,chinese-food?lock=113",
+      "包子": "https://loremflickr.com/900/600/baozi,steamed-bun?lock=114",
+      "水饺": "https://loremflickr.com/900/600/dumplings,jiaozi?lock=115",
+      "疙瘩汤": "https://loremflickr.com/900/600/chinese,soup,noodles?lock=116",
+      "炝锅面": "https://loremflickr.com/900/600/noodles,soup,chinese-food?lock=117",
+      "鸡蛋饼": "https://loremflickr.com/900/600/egg,pancake,breakfast?lock=118",
+      "蒸蛋": "https://loremflickr.com/900/600/steamed,egg,custard?lock=119",
+      "烤地瓜": "https://loremflickr.com/900/600/roasted,sweet-potato?lock=120",
+      "杂粮粥": "https://loremflickr.com/900/600/porridge,oatmeal?lock=121",
+      "寿司": "https://loremflickr.com/900/600/sushi?lock=122",
+      "三明治": "https://loremflickr.com/900/600/sandwich?lock=123",
+      "卤牛肉": "https://loremflickr.com/900/600/braised,beef,chinese-food?lock=124",
+      "番茄牛腩": "https://loremflickr.com/900/600/tomato,beef,stew?lock=125",
+      "羊汤": "https://loremflickr.com/900/600/lamb,soup?lock=126"
     };
 
     const defaultDishes = [
@@ -1389,10 +1425,12 @@
         const items = Array.isArray(order.items) ? order.items.map(item => item.name).join("、") : "未记录菜品";
         const status = order.status || "已下单";
         const icon = statusOptions.find(item => item.text === status)?.icon || "📝";
+        const orderedAt = formatOrderTime(order.created_at);
         return `
           <article class="order-card">
             <span class="status-pill">${icon} ${escapeHtml(status)}</span>
             <strong>${escapeHtml(order.customer_name || "家人")}｜${escapeHtml(order.people_count || "2人")}｜${escapeHtml(order.meal_time || "时间待定")}</strong>
+            <p>下单时间：${escapeHtml(orderedAt)}</p>
             <p>${escapeHtml(items)}</p>
             <p>备注：${escapeHtml(order.note || "无")}</p>
             <select class="field" data-order-status="${order.id}">
@@ -1419,10 +1457,12 @@
         const items = Array.isArray(order.items) ? order.items.map(item => item.name).join("、") : "未记录菜品";
         const status = order.status || "已下单";
         const icon = statusOptions.find(item => item.text === status)?.icon || "📝";
+        const orderedAt = formatOrderTime(order.created_at);
         return `
           <article class="order-card">
             <span class="status-pill">${icon} ${escapeHtml(status)}</span>
             <strong>${escapeHtml(order.customer_name || "家人")} 点了</strong>
+            <p>下单时间：${escapeHtml(orderedAt)}</p>
             <p>${escapeHtml(items)}</p>
             <p>${escapeHtml(order.meal_time || "时间待定")}${order.note ? "｜" + escapeHtml(order.note) : ""}</p>
           </article>
@@ -1436,12 +1476,17 @@
       const dishCounts = new Map();
       const memberCounts = new Map();
       const memberDishCounts = new Map();
+      const statusCounts = new Map();
+      const hourCounts = new Map();
       let notes = 0;
       periodOrders.forEach(order => {
         const memberName = order.customer_name || "家人";
         memberCounts.set(memberName, (memberCounts.get(memberName) || 0) + 1);
         if (!memberDishCounts.has(memberName)) memberDishCounts.set(memberName, new Map());
         if (order.note) notes += 1;
+        statusCounts.set(order.status || "已下单", (statusCounts.get(order.status || "已下单") || 0) + 1);
+        const hour = new Date(order.created_at).getHours();
+        if (!Number.isNaN(hour)) hourCounts.set(hour, (hourCounts.get(hour) || 0) + 1);
         (order.items || []).forEach(item => {
           dishCounts.set(item.name, (dishCounts.get(item.name) || 0) + 1);
           const memberMap = memberDishCounts.get(memberName);
@@ -1453,11 +1498,30 @@
       const periodLabel = { week: "本周", month: "本月", year: "今年" }[period];
       const topDishes = [...dishCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
       const maxDishCount = Math.max(1, ...topDishes.map(item => item[1]));
+      const topMembers = [...memberCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+      const maxMemberCount = Math.max(1, ...topMembers.map(item => item[1]));
+      const topHour = [...hourCounts.entries()].sort((a, b) => b[1] - a[1])[0];
+      const avgDishes = periodOrders.length ? Math.round(([...dishCounts.values()].reduce((sum, count) => sum + count, 0) / periodOrders.length) * 10) / 10 : 0;
       const preferences = [...memberDishCounts.entries()].map(([member, map]) => {
         const favorite = [...map.entries()].sort((a, b) => b[1] - a[1])[0];
         return { member, favorite: favorite?.[0] || "暂无", count: favorite?.[1] || 0 };
       });
       $("statsGrid").innerHTML = `
+        <div class="analytics-hero">
+          <div class="analytics-highlight">
+            <span>${periodLabel}家庭私厨概览</span>
+            <strong>${periodOrders.length} 单</strong>
+            <span>最受欢迎：${escapeHtml(topDish)}｜最爱点单：${escapeHtml(topMember)}</span>
+          </div>
+          <div class="stat">
+            <div class="stat-title"><strong>点单习惯</strong><em>自动分析</em></div>
+            <div class="preference-list">
+              <div class="preference-item"><span>平均每单菜品</span><span>${avgDishes} 道</span></div>
+              <div class="preference-item"><span>高峰下单时间</span><span>${topHour ? String(topHour[0]).padStart(2, "0") + ":00" : "暂无"}</span></div>
+              <div class="preference-item"><span>有备注订单</span><span>${notes} 单</span></div>
+            </div>
+          </div>
+        </div>
         <div class="stat"><strong>${periodOrders.length}</strong><span>${periodLabel}点单</span></div>
         <div class="stat"><strong>${escapeHtml(topDish)}</strong><span>最受欢迎</span></div>
         <div class="stat"><strong>${escapeHtml(topMember)}</strong><span>最爱点单</span></div>
@@ -1484,6 +1548,26 @@
             `).join("")}
           </div>
         </div>
+        <div class="stat wide">
+          <div class="stat-title"><strong>家人点单排行</strong><em>参与度</em></div>
+          <div class="preference-list">
+            ${(topMembers.length ? topMembers : [["暂无", 0]]).map(([name, count], index) => `
+              <div class="preference-item">
+                <span>${index + 1}. ${escapeHtml(name)}</span>
+                <span>${count} 单</span>
+                <span class="rank-bar"><i style="width:${Math.round((count / maxMemberCount) * 100)}%"></i></span>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+        <div class="stat wide">
+          <div class="stat-title"><strong>订单状态分布</strong><em>进度</em></div>
+          <div class="preference-list">
+            ${([...statusCounts.entries()].length ? [...statusCounts.entries()] : [["暂无", 0]]).map(([name, count]) => `
+              <div class="preference-item"><span>${escapeHtml(name)}</span><span>${count} 单</span></div>
+            `).join("")}
+          </div>
+        </div>
       `;
     }
 
@@ -1491,6 +1575,19 @@
       const date = new Date(order.created_at);
       const now = new Date();
       return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth() && date.getDate() === now.getDate();
+    }
+
+    function formatOrderTime(value) {
+      if (!value) return "时间未知";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "时间未知";
+      return date.toLocaleString("zh-CN", {
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      });
     }
 
     function isInPeriod(value, period) {
@@ -1964,32 +2061,32 @@
   <script>
     (() => {
       const imageFallbacks = {
-        "菌菇炖鸡": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=80",
-        "清炖排骨": "https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?auto=format&fit=crop&w=900&q=80",
-        "葱爆鲍鱼": "https://images.unsplash.com/photo-1559737558-2f5a35f4523b?auto=format&fit=crop&w=900&q=80",
-        "清蒸鱼": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=900&q=80",
-        "不辣鱼香肉丝": "https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=900&q=80",
-        "红烧肉": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=900&q=80",
-        "可乐鸡翅": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=900&q=80",
-        "西红柿炒蛋": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",
-        "凉拌白菜心": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80",
-        "凉拌皮蛋": "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=900&q=80",
-        "凉拌黄瓜粉皮": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",
-        "青椒炒肉": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=900&q=80",
-        "火锅": "https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=900&q=80",
-        "包子": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=900&q=80",
-        "水饺": "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=900&q=80",
-        "疙瘩汤": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=900&q=80",
-        "炝锅面": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=900&q=80",
-        "鸡蛋饼": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",
-        "蒸蛋": "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=900&q=80",
-        "烤地瓜": "https://images.unsplash.com/photo-1596097635121-14b63b7a0c19?auto=format&fit=crop&w=900&q=80",
-        "杂粮粥": "https://images.unsplash.com/photo-1517673132405-a56a62b18caf?auto=format&fit=crop&w=900&q=80",
-        "寿司": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=900&q=80",
-        "三明治": "https://images.unsplash.com/photo-1481070414801-51fd732d7184?auto=format&fit=crop&w=900&q=80",
-        "卤牛肉": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80",
-        "番茄牛腩": "https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=900&q=80",
-        "羊汤": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=900&q=80"
+        "菌菇炖鸡": "https://loremflickr.com/900/600/chicken,mushroom,stew?lock=101",
+        "清炖排骨": "https://loremflickr.com/900/600/pork,ribs,soup?lock=102",
+        "葱爆鲍鱼": "https://loremflickr.com/900/600/abalone,seafood?lock=103",
+        "清蒸鱼": "https://loremflickr.com/900/600/steamed,fish?lock=104",
+        "不辣鱼香肉丝": "https://loremflickr.com/900/600/shredded,pork,stir-fry?lock=105",
+        "红烧肉": "https://loremflickr.com/900/600/braised,pork,chinese-food?lock=106",
+        "可乐鸡翅": "https://loremflickr.com/900/600/chicken,wings?lock=107",
+        "西红柿炒蛋": "https://loremflickr.com/900/600/tomato,egg,breakfast?lock=108",
+        "凉拌白菜心": "https://loremflickr.com/900/600/cabbage,salad?lock=109",
+        "凉拌皮蛋": "https://loremflickr.com/900/600/century,egg,chinese-food?lock=110",
+        "凉拌黄瓜粉皮": "https://loremflickr.com/900/600/cucumber,salad,noodles?lock=111",
+        "青椒炒肉": "https://loremflickr.com/900/600/pepper,pork,stir-fry?lock=112",
+        "火锅": "https://loremflickr.com/900/600/hotpot,chinese-food?lock=113",
+        "包子": "https://loremflickr.com/900/600/baozi,steamed-bun?lock=114",
+        "水饺": "https://loremflickr.com/900/600/dumplings,jiaozi?lock=115",
+        "疙瘩汤": "https://loremflickr.com/900/600/chinese,soup,noodles?lock=116",
+        "炝锅面": "https://loremflickr.com/900/600/noodles,soup,chinese-food?lock=117",
+        "鸡蛋饼": "https://loremflickr.com/900/600/egg,pancake,breakfast?lock=118",
+        "蒸蛋": "https://loremflickr.com/900/600/steamed,egg,custard?lock=119",
+        "烤地瓜": "https://loremflickr.com/900/600/roasted,sweet-potato?lock=120",
+        "杂粮粥": "https://loremflickr.com/900/600/porridge,oatmeal?lock=121",
+        "寿司": "https://loremflickr.com/900/600/sushi?lock=122",
+        "三明治": "https://loremflickr.com/900/600/sandwich?lock=123",
+        "卤牛肉": "https://loremflickr.com/900/600/braised,beef,chinese-food?lock=124",
+        "番茄牛腩": "https://loremflickr.com/900/600/tomato,beef,stew?lock=125",
+        "羊汤": "https://loremflickr.com/900/600/lamb,soup?lock=126"
       };
 
       const matchImage = name => {
@@ -2001,7 +2098,7 @@
       async function syncDishImages() {
         let changed = 0;
         dishes = dishes.map(item => {
-          const image = item.image || matchImage(item.name);
+          const image = matchImage(item.name) || item.image;
           if (image && image !== item.image) changed += 1;
           return { ...item, image: image || item.image };
         });
