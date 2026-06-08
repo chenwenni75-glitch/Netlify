@@ -544,7 +544,7 @@
     }
 
     .admin-mode .admin-nav {
-      display: flex;
+      display: flex !important;
     }
 
     .admin-mode .actions #addDishBtn.admin-only,
@@ -2002,7 +2002,7 @@
       });
 
       document.getElementById("adminViewBtn")?.addEventListener("click", () => {
-        setTimeout(() => setAdminTab(activeAdminTab), 80);
+        setTimeout(() => setAdminTab("orders"), 80);
       }, true);
 
       document.getElementById("customerViewBtn")?.addEventListener("click", () => {
