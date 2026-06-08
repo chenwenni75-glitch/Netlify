@@ -528,7 +528,11 @@
     .admin-only { display: none !important; }
     .admin-mode .actions .admin-only { display: inline-flex !important; }
     .admin-mode .dish-actions .admin-only { display: inline-flex !important; }
-    .admin-mode .admin-block { display: block; }
+    .admin-mode .admin-block,
+    .admin-mode section.admin-only,
+    .admin-mode .panel.admin-only {
+      display: block !important;
+    }
     .admin-mode .customer-only { display: none !important; }
 
     .stats-grid {
@@ -1914,6 +1918,22 @@
 
       const syncImagesBtn = document.getElementById("syncImagesBtn");
       if (syncImagesBtn) syncImagesBtn.addEventListener("click", syncDishImages);
+
+      const refreshOrdersBtn = document.getElementById("refreshOrdersBtn");
+      if (refreshOrdersBtn) {
+        refreshOrdersBtn.addEventListener("click", event => {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          window.loadCloudOrders();
+        }, true);
+      }
+
+      const adminViewBtn = document.getElementById("adminViewBtn");
+      if (adminViewBtn) {
+        adminViewBtn.addEventListener("click", () => {
+          setTimeout(() => window.loadCloudOrders(), 50);
+        }, true);
+      }
     })();
   </script>
 </body>
