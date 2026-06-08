@@ -1,0 +1,4 @@
+window.PRIVATE_CHEF_CONFIG = {
+  supabaseUrl: "https://tbpkvwjpukljqlkcvsvu.supabase.co",
+  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRicGt2d2pwdWtsanFsa2N2c3Z1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4NTc5NDYsImV4cCI6MjA5NjQzMzk0Nn0.YGKUtpdUU0zyHD_jfTJh7UTdpdh4VdlwHuneFmntQNY"
+};
