@@ -560,6 +560,29 @@
       display: none !important;
     }
 
+    .admin-mode.admin-tab-orders .layout {
+      grid-template-columns: minmax(0, 760px);
+      justify-content: center;
+    }
+
+    .admin-mode.admin-tab-orders .layout > div {
+      display: none;
+    }
+
+    .admin-mode.admin-tab-orders .side {
+      position: static;
+    }
+
+    .admin-mode.admin-tab-menu .side,
+    .admin-mode.admin-tab-stats .side {
+      display: none;
+    }
+
+    .admin-mode.admin-tab-menu .layout,
+    .admin-mode.admin-tab-stats .layout {
+      grid-template-columns: 1fr;
+    }
+
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -567,15 +590,18 @@
     }
 
     .stat {
-      background: #fff;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,247,239,.96));
       border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 12px;
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 12px 30px rgba(119, 76, 42, .08);
     }
 
     .stat strong {
       display: block;
-      font-size: 24px;
+      font-size: 30px;
+      line-height: 1.1;
     }
 
     .stat span {
@@ -594,13 +620,51 @@
     }
 
     .preference-item {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
       border-top: 1px solid var(--line);
       padding-top: 8px;
       color: var(--muted);
       font-size: 14px;
+    }
+
+    .rank-bar {
+      grid-column: 1 / -1;
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--soft);
+    }
+
+    .rank-bar i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--brand), var(--gold));
+    }
+
+    .stat-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .stat-title strong {
+      font-size: 22px;
+    }
+
+    .stat-title em {
+      font-style: normal;
+      color: var(--brand-dark);
+      background: var(--soft);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 13px;
+      white-space: nowrap;
     }
 
     .ai-box {
@@ -1388,6 +1452,7 @@
       const topMember = [...memberCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || "暂无";
       const periodLabel = { week: "本周", month: "本月", year: "今年" }[period];
       const topDishes = [...dishCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+      const maxDishCount = Math.max(1, ...topDishes.map(item => item[1]));
       const preferences = [...memberDishCounts.entries()].map(([member, map]) => {
         const favorite = [...map.entries()].sort((a, b) => b[1] - a[1])[0];
         return { member, favorite: favorite?.[0] || "暂无", count: favorite?.[1] || 0 };
@@ -1400,15 +1465,19 @@
         <div class="stat"><strong>${notes}</strong><span>有备注订单</span></div>
         <div class="stat"><strong>${dishes.length}</strong><span>菜单菜品数</span></div>
         <div class="stat wide">
-          <strong>${periodLabel}菜品排行</strong>
+          <div class="stat-title"><strong>${periodLabel}菜品排行</strong><em>Top 5</em></div>
           <div class="preference-list">
             ${(topDishes.length ? topDishes : [["暂无", 0]]).map(([name, count], index) => `
-              <div class="preference-item"><span>${index + 1}. ${escapeHtml(name)}</span><span>${count} 次</span></div>
+              <div class="preference-item">
+                <span>${index + 1}. ${escapeHtml(name)}</span>
+                <span>${count} 次</span>
+                <span class="rank-bar"><i style="width:${Math.round((count / maxDishCount) * 100)}%"></i></span>
+              </div>
             `).join("")}
           </div>
         </div>
         <div class="stat wide">
-          <strong>家人喜好分析</strong>
+          <div class="stat-title"><strong>家人喜好分析</strong><em>按点单人</em></div>
           <div class="preference-list">
             ${(preferences.length ? preferences : [{ member: "暂无", favorite: "暂无", count: 0 }]).map(item => `
               <div class="preference-item"><span>${escapeHtml(item.member)} 最常点：${escapeHtml(item.favorite)}</span><span>${item.count} 次</span></div>
@@ -1984,6 +2053,8 @@
           return;
         }
         activeAdminTab = tab;
+        document.body.classList.remove("admin-tab-orders", "admin-tab-menu", "admin-tab-stats");
+        document.body.classList.add(`admin-tab-${activeAdminTab}`);
         document.querySelectorAll("[data-admin-tab]").forEach(button => {
           button.classList.toggle("active", button.dataset.adminTab === activeAdminTab);
         });
