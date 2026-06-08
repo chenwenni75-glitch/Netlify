@@ -535,6 +535,31 @@
     }
     .admin-mode .customer-only { display: none !important; }
 
+    .admin-nav {
+      display: none;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 6px 0 14px;
+      margin-top: 4px;
+    }
+
+    .admin-mode .admin-nav {
+      display: flex;
+    }
+
+    .admin-mode .actions #addDishBtn.admin-only,
+    .admin-mode .actions #syncImagesBtn.admin-only {
+      display: none !important;
+    }
+
+    .admin-nav button {
+      flex: 0 0 auto;
+    }
+
+    .admin-module-hidden {
+      display: none !important;
+    }
+
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -703,6 +728,14 @@
       </div>
     </header>
 
+    <nav class="admin-nav admin-only" id="adminNav" aria-label="私厨后台二级菜单">
+      <button class="tab active" type="button" data-admin-tab="orders">订单看板</button>
+      <button class="tab" type="button" data-admin-tab="menu">菜单</button>
+      <button class="tab" type="button" data-admin-tab="add">新增菜品</button>
+      <button class="tab" type="button" data-admin-tab="images">补齐菜品图片</button>
+      <button class="tab" type="button" data-admin-tab="stats">数据分析</button>
+    </nav>
+
     <section class="hero customer-only">
       <div class="hero-copy">
         <span class="eyebrow">今日现做 · 家人专享</span>
@@ -731,7 +764,7 @@
       <div class="recommend-grid" id="recommendGrid"></div>
     </section>
 
-    <section class="section">
+    <section class="section admin-module" data-admin-module="menu">
       <div class="section-head">
         <div>
           <h2 id="menuSection">菜单</h2>
@@ -743,7 +776,7 @@
 
     <section class="layout">
       <div>
-        <div class="toolbar">
+        <div class="toolbar admin-module" data-admin-module="menu">
           <input class="field" id="searchInput" placeholder="搜索菜名、食材、标签" />
           <select class="field" id="sortSelect" aria-label="排序">
             <option value="default">默认排序</option>
@@ -752,9 +785,9 @@
             <option value="name">按菜名排序</option>
           </select>
         </div>
-        <div class="dish-grid" id="dishGrid"></div>
+        <div class="dish-grid admin-module" data-admin-module="menu" id="dishGrid"></div>
 
-        <section class="section admin-only admin-block">
+        <section class="section admin-only admin-block admin-module" data-admin-module="stats">
           <div class="section-head">
             <div>
               <h2>📊 数据统计</h2>
@@ -800,7 +833,7 @@
           <div class="cart-list" id="todayOrderList"></div>
         </section>
 
-        <section class="panel admin-only admin-block">
+        <section class="panel admin-only admin-block admin-module" data-admin-module="orders">
           <h2>订单看板</h2>
           <div class="cart-list" id="orderList"></div>
           <button class="btn secondary" id="refreshOrdersBtn" type="button">刷新订单</button>
@@ -907,7 +940,7 @@
       { icon: "👨", name: "爸爸" },
       { icon: "👩", name: "妈妈" },
       { icon: "👧", name: "女儿" },
-      { icon: "👦", name: "儿子" }
+      { icon: "👥", name: "亲戚/朋友" }
     ];
 
     const dishImages = {
@@ -984,6 +1017,7 @@
     let editingId = null;
     let currentView = localStorage.getItem(VIEW_KEY) || "customer";
     let selectedMember = localStorage.getItem("family_private_chef_member") || "妈妈";
+    if (selectedMember === "儿子") selectedMember = "亲戚/朋友";
 
     const $ = id => document.getElementById(id);
 
@@ -1934,6 +1968,52 @@
           setTimeout(() => window.loadCloudOrders(), 50);
         }, true);
       }
+    })();
+  </script>
+  <script>
+    (() => {
+      let activeAdminTab = "orders";
+
+      function setAdminTab(tab) {
+        if (tab === "add") {
+          document.getElementById("addDishBtn")?.click();
+          return;
+        }
+        if (tab === "images") {
+          document.getElementById("syncImagesBtn")?.click();
+          return;
+        }
+        activeAdminTab = tab;
+        document.querySelectorAll("[data-admin-tab]").forEach(button => {
+          button.classList.toggle("active", button.dataset.adminTab === activeAdminTab);
+        });
+        document.querySelectorAll("[data-admin-module]").forEach(module => {
+          const shouldShow = module.dataset.adminModule === activeAdminTab;
+          module.classList.toggle("admin-module-hidden", !shouldShow && document.body.classList.contains("admin-mode"));
+        });
+        if (activeAdminTab === "orders" && window.loadCloudOrders) window.loadCloudOrders();
+        if (activeAdminTab === "stats" && window.loadCloudOrders) window.loadCloudOrders();
+      }
+
+      document.getElementById("adminNav")?.addEventListener("click", event => {
+        const button = event.target.closest("[data-admin-tab]");
+        if (!button) return;
+        setAdminTab(button.dataset.adminTab);
+      });
+
+      document.getElementById("adminViewBtn")?.addEventListener("click", () => {
+        setTimeout(() => setAdminTab(activeAdminTab), 80);
+      }, true);
+
+      document.getElementById("customerViewBtn")?.addEventListener("click", () => {
+        document.querySelectorAll("[data-admin-module]").forEach(module => {
+          module.classList.remove("admin-module-hidden");
+        });
+      }, true);
+
+      setTimeout(() => {
+        if (document.body.classList.contains("admin-mode")) setAdminTab(activeAdminTab);
+      }, 100);
     })();
   </script>
 </body>
