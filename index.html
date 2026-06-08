@@ -554,6 +554,26 @@
       font-size: 13px;
     }
 
+    .stat.wide {
+      grid-column: 1 / -1;
+    }
+
+    .preference-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .preference-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
     .ai-box {
       display: grid;
       gap: 10px;
@@ -732,9 +752,14 @@
         <section class="section admin-only admin-block">
           <div class="section-head">
             <div>
-              <h2>📊 本月统计</h2>
-              <p>看看谁最会点、哪道菜最受欢迎。</p>
+              <h2>📊 数据统计</h2>
+              <p>按周、月、年分析家人口味和热门菜品。</p>
             </div>
+            <select class="field" id="statsPeriod" aria-label="统计周期">
+              <option value="week">本周</option>
+              <option value="month" selected>本月</option>
+              <option value="year">今年</option>
+            </select>
           </div>
           <div class="stats-grid" id="statsGrid"></div>
         </section>
@@ -763,6 +788,11 @@
           <button class="btn green" id="submitOrderBtn" type="button">提交点单</button>
           <button class="btn secondary" id="shareOrderBtn" type="button">复制到微信</button>
           <button class="btn secondary" id="clearCartBtn" type="button">清空点单</button>
+        </section>
+
+        <section class="panel customer-only">
+          <h2>今天大家已点</h2>
+          <div class="cart-list" id="todayOrderList"></div>
         </section>
 
         <section class="panel admin-only admin-block">
@@ -875,6 +905,35 @@
       { icon: "👦", name: "儿子" }
     ];
 
+    const dishImages = {
+      "菌菇炖鸡": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=80",
+      "清炖排骨": "https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?auto=format&fit=crop&w=900&q=80",
+      "葱爆鲍鱼": "https://images.unsplash.com/photo-1559737558-2f5a35f4523b?auto=format&fit=crop&w=900&q=80",
+      "清蒸鱼": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=900&q=80",
+      "不辣鱼香肉丝": "https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=900&q=80",
+      "红烧肉": "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=900&q=80",
+      "可乐鸡翅": "https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=900&q=80",
+      "西红柿炒蛋": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",
+      "凉拌白菜心": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80",
+      "凉拌皮蛋": "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=900&q=80",
+      "凉拌黄瓜粉皮": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80",
+      "青椒炒肉": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=900&q=80",
+      "火锅": "https://images.unsplash.com/photo-1555126634-323283e090fa?auto=format&fit=crop&w=900&q=80",
+      "包子": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=900&q=80",
+      "水饺": "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=900&q=80",
+      "疙瘩汤": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=900&q=80",
+      "炝锅面": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=900&q=80",
+      "鸡蛋饼": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=80",
+      "蒸蛋": "https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?auto=format&fit=crop&w=900&q=80",
+      "烤地瓜": "https://images.unsplash.com/photo-1596097635121-14b63b7a0c19?auto=format&fit=crop&w=900&q=80",
+      "杂粮粥": "https://images.unsplash.com/photo-1517673132405-a56a62b18caf?auto=format&fit=crop&w=900&q=80",
+      "寿司": "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=900&q=80",
+      "三明治": "https://images.unsplash.com/photo-1481070414801-51fd732d7184?auto=format&fit=crop&w=900&q=80",
+      "卤牛肉": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=80",
+      "番茄牛腩": "https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=900&q=80",
+      "羊汤": "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=900&q=80"
+    };
+
     const defaultDishes = [
       dish("菌菇炖鸡", "招牌菜", "60-90分钟", 60, "鸡腿/整鸡、香菇、蟹味菇/白玉菇、葱、姜", ["营养热乎", "汤菜合一", "晚餐"], "适合晚餐，孩子和大人都能吃。"),
       dish("清炖排骨", "招牌菜", "70-100分钟", 70, "排骨、玉米/山药/冬瓜、葱、姜", ["清淡", "孩子友好", "补蛋白"], "清淡营养，适合晚餐主菜或汤菜。"),
@@ -924,7 +983,7 @@
     const $ = id => document.getElementById(id);
 
     function dish(name, category, time, minutes, ingredients, tags, note) {
-      return { id: uuid(), name, category, time, minutes, ingredients, tags, note, image: "" };
+      return { id: uuid(), name, category, time, minutes, ingredients, tags, note, image: dishImages[name] || "" };
     }
 
     function uuid() {
@@ -951,7 +1010,7 @@
         minutes: Number(item.minutes || 30),
         ingredients: item.ingredients || "",
         tags: Array.isArray(item.tags) ? item.tags : [],
-        image: item.image || "",
+        image: item.image || dishImages[item.name] || "",
         note: item.note || ""
       };
     }
@@ -1025,9 +1084,11 @@
       try {
         const rows = await cloudRequest("dishes?select=*&order=created_at.desc");
         if (Array.isArray(rows) && rows.length) {
+          const shouldBackfillImages = rows.some(row => !row.image && dishImages[row.name]);
           dishes = rows.map(fromCloudDish);
           saveDishes();
           renderAll();
+          if (shouldBackfillImages) syncLocalDishesToCloud().catch(() => {});
         } else if (Array.isArray(rows) && !rows.length && dishes.length) {
           await syncLocalDishesToCloud();
           showToast("已把本地菜单同步到云端");
@@ -1213,10 +1274,12 @@
     function renderOrders() {
       if (!isCloudReady()) {
         $("orderList").innerHTML = `<div class="empty">还没有连接云端。连接后这里会显示家人提交的订单。</div>`;
+        $("todayOrderList").innerHTML = `<div class="empty">连接云端后，家人都能看到今天已经点了什么。</div>`;
         return;
       }
       if (!orders.length) {
         $("orderList").innerHTML = `<div class="empty">暂无订单。</div>`;
+        $("todayOrderList").innerHTML = `<div class="empty">今天还没有人点单。</div>`;
         return;
       }
       $("orderList").innerHTML = orders.map(order => {
@@ -1235,29 +1298,103 @@
           </article>
         `;
       }).join("");
+      renderTodayOrders();
+    }
+
+    function renderTodayOrders() {
+      if (!$("todayOrderList")) return;
+      if (!isCloudReady()) {
+        $("todayOrderList").innerHTML = `<div class="empty">连接云端后，家人都能看到今天已经点了什么。</div>`;
+        return;
+      }
+      const todayOrders = orders.filter(isToday);
+      if (!todayOrders.length) {
+        $("todayOrderList").innerHTML = `<div class="empty">今天还没有人点单。</div>`;
+        return;
+      }
+      $("todayOrderList").innerHTML = todayOrders.map(order => {
+        const items = Array.isArray(order.items) ? order.items.map(item => item.name).join("、") : "未记录菜品";
+        const status = order.status || "已下单";
+        const icon = statusOptions.find(item => item.text === status)?.icon || "📝";
+        return `
+          <article class="order-card">
+            <span class="status-pill">${icon} ${escapeHtml(status)}</span>
+            <strong>${escapeHtml(order.customer_name || "家人")} 点了</strong>
+            <p>${escapeHtml(items)}</p>
+            <p>${escapeHtml(order.meal_time || "时间待定")}${order.note ? "｜" + escapeHtml(order.note) : ""}</p>
+          </article>
+        `;
+      }).join("");
     }
 
     function renderStats() {
-      const month = new Date().getMonth();
-      const monthOrders = orders.filter(order => new Date(order.created_at).getMonth() === month);
+      const period = $("statsPeriod")?.value || "month";
+      const periodOrders = orders.filter(order => isInPeriod(order.created_at, period));
       const dishCounts = new Map();
       const memberCounts = new Map();
+      const memberDishCounts = new Map();
       let notes = 0;
-      monthOrders.forEach(order => {
-        memberCounts.set(order.customer_name || "家人", (memberCounts.get(order.customer_name || "家人") || 0) + 1);
+      periodOrders.forEach(order => {
+        const memberName = order.customer_name || "家人";
+        memberCounts.set(memberName, (memberCounts.get(memberName) || 0) + 1);
+        if (!memberDishCounts.has(memberName)) memberDishCounts.set(memberName, new Map());
         if (order.note) notes += 1;
-        (order.items || []).forEach(item => dishCounts.set(item.name, (dishCounts.get(item.name) || 0) + 1));
+        (order.items || []).forEach(item => {
+          dishCounts.set(item.name, (dishCounts.get(item.name) || 0) + 1);
+          const memberMap = memberDishCounts.get(memberName);
+          memberMap.set(item.name, (memberMap.get(item.name) || 0) + 1);
+        });
       });
       const topDish = [...dishCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || "暂无";
       const topMember = [...memberCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || "暂无";
+      const periodLabel = { week: "本周", month: "本月", year: "今年" }[period];
+      const topDishes = [...dishCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+      const preferences = [...memberDishCounts.entries()].map(([member, map]) => {
+        const favorite = [...map.entries()].sort((a, b) => b[1] - a[1])[0];
+        return { member, favorite: favorite?.[0] || "暂无", count: favorite?.[1] || 0 };
+      });
       $("statsGrid").innerHTML = `
-        <div class="stat"><strong>${monthOrders.length}</strong><span>本月点单</span></div>
+        <div class="stat"><strong>${periodOrders.length}</strong><span>${periodLabel}点单</span></div>
         <div class="stat"><strong>${escapeHtml(topDish)}</strong><span>最受欢迎</span></div>
         <div class="stat"><strong>${escapeHtml(topMember)}</strong><span>最爱点单</span></div>
         <div class="stat"><strong>${dishCounts.size}</strong><span>被点过的菜</span></div>
         <div class="stat"><strong>${notes}</strong><span>有备注订单</span></div>
         <div class="stat"><strong>${dishes.length}</strong><span>菜单菜品数</span></div>
+        <div class="stat wide">
+          <strong>${periodLabel}菜品排行</strong>
+          <div class="preference-list">
+            ${(topDishes.length ? topDishes : [["暂无", 0]]).map(([name, count], index) => `
+              <div class="preference-item"><span>${index + 1}. ${escapeHtml(name)}</span><span>${count} 次</span></div>
+            `).join("")}
+          </div>
+        </div>
+        <div class="stat wide">
+          <strong>家人喜好分析</strong>
+          <div class="preference-list">
+            ${(preferences.length ? preferences : [{ member: "暂无", favorite: "暂无", count: 0 }]).map(item => `
+              <div class="preference-item"><span>${escapeHtml(item.member)} 最常点：${escapeHtml(item.favorite)}</span><span>${item.count} 次</span></div>
+            `).join("")}
+          </div>
+        </div>
       `;
+    }
+
+    function isToday(order) {
+      const date = new Date(order.created_at);
+      const now = new Date();
+      return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth() && date.getDate() === now.getDate();
+    }
+
+    function isInPeriod(value, period) {
+      const date = new Date(value);
+      const now = new Date();
+      if (period === "year") return date.getFullYear() === now.getFullYear();
+      if (period === "month") return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
+      const start = new Date(now);
+      const day = start.getDay() || 7;
+      start.setHours(0, 0, 0, 0);
+      start.setDate(start.getDate() - day + 1);
+      return date >= start && date <= now;
     }
 
     function applyViewMode() {
@@ -1275,6 +1412,7 @@
       renderDishes();
       renderCart();
       renderOrders();
+      renderTodayOrders();
       renderStats();
     }
 
@@ -1602,6 +1740,7 @@
     $("importBtn").addEventListener("click", () => $("fileInput").click());
     $("searchInput").addEventListener("input", renderDishes);
     $("sortSelect").addEventListener("change", renderDishes);
+    $("statsPeriod").addEventListener("change", renderStats);
     $("aiRecommendBtn").addEventListener("click", generateAiRecommend);
 
     renderAll();
