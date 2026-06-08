@@ -3,88 +3,76 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>家庭私厨可点菜单</title>
+  <title>Wenni私厨</title>
   <style>
     :root {
-      --bg: #f7f4ec;
-      --paper: #fffaf1;
-      --ink: #28231d;
-      --muted: #766d61;
-      --line: #e6dccc;
-      --brand: #b54a2e;
-      --brand-2: #2f7a73;
-      --soft: #efe5d6;
-      --ok: #357a4f;
-      --warn: #a86618;
-      --shadow: 0 18px 50px rgba(62, 45, 25, .12);
+      --bg: #fff8f0;
+      --paper: #fffdf9;
+      --ink: #2e241b;
+      --muted: #7a6758;
+      --line: #f0ddce;
+      --brand: #ff7a45;
+      --brand-dark: #c9572d;
+      --soft: #ffe7d1;
+      --green: #2f8f6b;
+      --gold: #d97706;
+      --shadow: 0 18px 50px rgba(119, 76, 42, .14);
     }
 
     * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
       margin: 0;
       color: var(--ink);
       font-family: "Microsoft YaHei", "PingFang SC", system-ui, -apple-system, Segoe UI, sans-serif;
       background:
-        radial-gradient(circle at 12% 8%, rgba(181, 74, 46, .10), transparent 28%),
-        linear-gradient(180deg, #fbf7ef 0%, var(--bg) 42%, #f2eee5 100%);
+        radial-gradient(circle at top left, rgba(255, 122, 69, .16), transparent 28%),
+        linear-gradient(180deg, #fff8f0 0%, #fff3e8 48%, #fffaf5 100%);
       min-height: 100vh;
     }
 
-    button, input, select, textarea {
-      font: inherit;
-    }
-
-    button {
-      border: 0;
-      cursor: pointer;
-    }
+    button, input, select, textarea { font: inherit; }
+    button { border: 0; cursor: pointer; }
 
     .app {
       width: min(1180px, calc(100% - 28px));
       margin: 0 auto;
-      padding: 18px 0 36px;
+      padding: 14px 0 38px;
     }
 
     .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
-      padding: 12px 0 18px;
+      gap: 12px;
+      padding: 10px 0;
+      backdrop-filter: blur(16px);
+      background: rgba(255, 248, 240, .82);
     }
 
-    .brand {
+    .mini-brand {
       display: flex;
       align-items: center;
-      gap: 12px;
-      min-width: 0;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 18px;
+      white-space: nowrap;
     }
 
-    .brand-mark {
-      width: 46px;
-      height: 46px;
+    .mini-logo {
+      width: 34px;
+      height: 34px;
       border-radius: 8px;
       display: grid;
       place-items: center;
       background: var(--brand);
-      color: #fff7ec;
-      font-size: 25px;
-      box-shadow: 0 8px 20px rgba(181, 74, 46, .25);
-      flex: 0 0 auto;
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: clamp(22px, 3vw, 34px);
-      letter-spacing: 0;
-      line-height: 1.15;
-    }
-
-    .brand p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 14px;
+      color: white;
+      box-shadow: 0 8px 18px rgba(255, 122, 69, .25);
     }
 
     .actions {
@@ -98,80 +86,228 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 7px;
+      gap: 6px;
       min-height: 38px;
-      padding: 9px 12px;
-      border-radius: 8px;
-      background: var(--ink);
-      color: #fffaf2;
+      padding: 9px 13px;
+      border-radius: 999px;
+      background: var(--brand);
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(255, 122, 69, .22);
       white-space: nowrap;
-      box-shadow: 0 8px 18px rgba(40, 35, 29, .12);
     }
 
     .btn.secondary {
-      background: #fffaf2;
+      background: rgba(255, 253, 249, .9);
       color: var(--ink);
       border: 1px solid var(--line);
       box-shadow: none;
     }
 
-    .btn.green { background: var(--brand-2); }
-    .btn.red { background: var(--brand); }
-    .btn.icon { width: 38px; padding: 0; }
+    .btn.green { background: var(--green); }
+    .btn.dark { background: var(--ink); }
+    .btn.icon { width: 38px; padding: 0; border-radius: 50%; }
+
+    .hero {
+      min-height: min(620px, calc(100vh - 78px));
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 480px);
+      gap: 28px;
+      align-items: center;
+      padding: 28px 0 34px;
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--brand-dark);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      box-shadow: 0 8px 20px rgba(119, 76, 42, .08);
+    }
+
+    h1 {
+      margin: 16px 0 10px;
+      font-size: clamp(42px, 7vw, 76px);
+      line-height: .98;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(17px, 2vw, 22px);
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .hero-photo {
+      position: relative;
+      min-height: 420px;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background:
+        linear-gradient(145deg, rgba(46, 36, 27, .08), rgba(255, 122, 69, .12)),
+        url("https://images.unsplash.com/photo-1543353071-10c8ba85a904?auto=format&fit=crop&w=1200&q=80") center/cover;
+    }
+
+    .hero-photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 46%, rgba(46, 36, 27, .56));
+    }
+
+    .hero-note {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 18px;
+      z-index: 1;
+      color: #fff;
+    }
+
+    .hero-note strong {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    .hero-note span { color: rgba(255,255,255,.86); }
+
+    .section {
+      margin-top: 22px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    .section-head p {
+      margin: 4px 0 0;
+      color: var(--muted);
+    }
+
+    .category-strip {
+      display: flex;
+      gap: 9px;
+      overflow-x: auto;
+      padding: 4px 2px 12px;
+      scrollbar-width: thin;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 9px 14px;
+      white-space: nowrap;
+      box-shadow: 0 8px 18px rgba(119, 76, 42, .07);
+    }
+
+    .tab.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff;
+    }
 
     .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 340px;
+      grid-template-columns: minmax(0, 1fr) 360px;
       gap: 18px;
       align-items: start;
     }
 
-    .panel {
-      background: rgba(255, 250, 241, .86);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-    }
-
-    .controls {
-      padding: 14px;
+    .toolbar {
       display: grid;
       grid-template-columns: 1fr 170px;
       gap: 10px;
       margin-bottom: 14px;
     }
 
-    .searchbox, .select, .field {
+    .field {
       width: 100%;
       border: 1px solid var(--line);
-      background: #fffdf8;
+      background: #fffdf9;
       color: var(--ink);
-      border-radius: 8px;
-      padding: 10px 12px;
+      border-radius: 14px;
+      padding: 11px 13px;
       outline: none;
     }
 
-    .tabs {
-      display: flex;
-      gap: 8px;
-      padding: 0 14px 14px;
-      overflow-x: auto;
+    textarea.field {
+      min-height: 88px;
+      resize: vertical;
     }
 
-    .tab {
+    .recommend-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .recommend-card {
       border: 1px solid var(--line);
-      background: #fffdf8;
-      color: var(--muted);
-      border-radius: 999px;
-      padding: 8px 12px;
-      white-space: nowrap;
+      border-radius: 18px;
+      overflow: hidden;
+      min-height: 150px;
+      position: relative;
+      background: var(--paper);
+      box-shadow: 0 12px 28px rgba(119, 76, 42, .08);
     }
 
-    .tab.active {
-      background: var(--brand);
-      border-color: var(--brand);
-      color: #fffaf2;
+    .recommend-card img {
+      width: 100%;
+      height: 100%;
+      min-height: 150px;
+      object-fit: cover;
+      display: block;
     }
+
+    .recommend-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.58));
+    }
+
+    .recommend-info {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      color: #fff;
+      z-index: 1;
+    }
+
+    .recommend-info strong { display: block; font-size: 19px; }
+    .recommend-info span { font-size: 13px; color: rgba(255,255,255,.86); }
 
     .dish-grid {
       display: grid;
@@ -180,14 +316,20 @@
     }
 
     .dish-card {
-      background: #fffaf1;
+      background: var(--paper);
       border: 1px solid var(--line);
-      border-radius: 8px;
+      border-radius: 18px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       min-height: 100%;
-      box-shadow: 0 12px 28px rgba(74, 57, 33, .08);
+      box-shadow: 0 14px 32px rgba(119, 76, 42, .1);
+      transition: transform .16s ease, box-shadow .16s ease;
+    }
+
+    .dish-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 42px rgba(119, 76, 42, .16);
     }
 
     .dish-photo {
@@ -210,26 +352,25 @@
       right: 8px;
       bottom: 8px;
       display: flex;
-      flex-wrap: wrap;
       gap: 5px;
+      flex-wrap: wrap;
     }
 
     .badge {
       display: inline-flex;
-      align-items: center;
       min-height: 24px;
-      padding: 4px 7px;
+      align-items: center;
+      padding: 4px 8px;
       border-radius: 999px;
-      background: rgba(255, 250, 241, .92);
+      background: rgba(255, 253, 249, .92);
       color: var(--ink);
       font-size: 12px;
-      border: 1px solid rgba(230, 220, 204, .8);
+      border: 1px solid rgba(240, 221, 206, .82);
     }
 
     .dish-body {
       padding: 12px;
-      display: flex;
-      flex-direction: column;
+      display: grid;
       gap: 9px;
       flex: 1;
     }
@@ -237,28 +378,37 @@
     .dish-title {
       display: flex;
       justify-content: space-between;
-      gap: 8px;
       align-items: start;
+      gap: 8px;
     }
 
-    .dish-title h2 {
-      font-size: 18px;
+    .dish-title h3 {
       margin: 0;
+      font-size: 19px;
       line-height: 1.25;
     }
 
-    .time {
-      color: var(--brand-2);
+    .stars {
+      color: var(--gold);
       font-size: 13px;
       white-space: nowrap;
-      margin-top: 2px;
+      margin-top: 3px;
+    }
+
+    .meta-line {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
     }
 
     .ingredients {
       color: var(--muted);
       font-size: 13px;
-      line-height: 1.55;
-      min-height: 40px;
+      line-height: 1.5;
+      min-height: 39px;
     }
 
     .dish-actions {
@@ -270,27 +420,64 @@
 
     .side {
       position: sticky;
-      top: 12px;
-      padding: 14px;
+      top: 76px;
+      display: grid;
+      gap: 14px;
     }
 
-    .side h2 {
+    .panel {
+      background: rgba(255, 253, 249, .92);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel h2 {
       margin: 0 0 10px;
-      font-size: 20px;
+      font-size: 21px;
+    }
+
+    .member-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .member {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 8px 5px;
+      color: var(--muted);
+    }
+
+    .member.active {
+      background: var(--soft);
+      color: var(--brand-dark);
+      border-color: #ffc399;
+      font-weight: 700;
     }
 
     .order-meta {
       display: grid;
       gap: 9px;
-      margin-bottom: 12px;
     }
 
     .cart-list {
       display: grid;
       gap: 8px;
-      max-height: 300px;
+      max-height: 340px;
       overflow: auto;
       padding-right: 2px;
+    }
+
+    .cart-item, .order-card {
+      border: 1px solid var(--line);
+      background: #fffdf9;
+      border-radius: 16px;
+      padding: 10px;
     }
 
     .cart-item {
@@ -298,112 +485,96 @@
       grid-template-columns: 1fr auto;
       gap: 8px;
       align-items: center;
-      border: 1px solid var(--line);
-      background: #fffdf8;
-      border-radius: 8px;
-      padding: 9px;
     }
 
-    .cart-item strong { display: block; }
-    .cart-item span { color: var(--muted); font-size: 12px; }
+    .cart-item strong,
+    .order-card strong { display: block; }
+
+    .cart-item span,
+    .order-card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 3px 0 0;
+    }
+
+    .order-card {
+      display: grid;
+      gap: 9px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: max-content;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--brand-dark);
+      font-size: 13px;
+      font-weight: 700;
+    }
 
     .empty {
       border: 1px dashed var(--line);
-      border-radius: 8px;
+      border-radius: 16px;
       padding: 16px;
       color: var(--muted);
       text-align: center;
-      background: rgba(255, 253, 248, .65);
+      background: rgba(255, 253, 249, .72);
     }
 
-    .order-summary {
-      margin-top: 12px;
-      border-top: 1px solid var(--line);
-      padding-top: 12px;
+    .admin-only { display: none !important; }
+    .admin-mode .actions .admin-only { display: inline-flex !important; }
+    .admin-mode .dish-actions .admin-only { display: inline-flex !important; }
+    .admin-mode .admin-block { display: block; }
+    .admin-mode .customer-only { display: none !important; }
+
+    .stats-grid {
       display: grid;
-      gap: 8px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
     }
 
-    .admin-orders {
-      margin-top: 16px;
-      border-top: 1px solid var(--line);
-      padding-top: 14px;
+    .stat {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 24px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .ai-box {
       display: grid;
       gap: 10px;
     }
 
-    .admin-orders h2 {
-      margin-top: 0;
-    }
-
-    .customer-mode .admin-only {
-      display: none !important;
-    }
-
-    .admin-mode .order-meta,
-    .admin-mode #cartList,
-    .admin-mode .order-summary {
-      display: none;
-    }
-
-    .admin-mode #sideTitle {
-      display: none;
-    }
-
-    .order-card {
-      border: 1px solid var(--line);
-      background: #fffdf8;
-      border-radius: 8px;
-      padding: 10px;
+    .ai-result {
       display: grid;
       gap: 8px;
     }
 
-    .order-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .status-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 22px;
-      transform: translateX(-50%) translateY(18px);
-      opacity: 0;
-      pointer-events: none;
-      background: var(--ink);
-      color: #fffaf2;
-      padding: 10px 14px;
-      border-radius: 8px;
-      box-shadow: var(--shadow);
-      transition: opacity .2s ease, transform .2s ease;
-      z-index: 20;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
     dialog {
       border: 0;
-      border-radius: 8px;
+      border-radius: 20px;
       padding: 0;
-      width: min(680px, calc(100% - 28px));
-      background: #fffaf1;
+      width: min(700px, calc(100% - 28px));
+      background: var(--paper);
       color: var(--ink);
-      box-shadow: 0 22px 70px rgba(40, 35, 29, .28);
+      box-shadow: 0 24px 74px rgba(46, 36, 27, .28);
     }
 
-    dialog::backdrop { background: rgba(26, 21, 16, .42); }
+    dialog::backdrop { background: rgba(46, 36, 27, .44); }
 
     .modal-head {
       padding: 16px;
@@ -414,7 +585,7 @@
       gap: 12px;
     }
 
-    .modal-head h2 { margin: 0; font-size: 20px; }
+    .modal-head h2 { margin: 0; font-size: 21px; }
 
     .form {
       padding: 16px;
@@ -432,11 +603,6 @@
 
     .form label.wide { grid-column: 1 / -1; }
 
-    textarea.field {
-      min-height: 86px;
-      resize: vertical;
-    }
-
     .modal-actions {
       padding: 0 16px 16px;
       display: flex;
@@ -444,91 +610,163 @@
       gap: 8px;
     }
 
-    .print-sheet {
-      display: none;
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(18px);
+      opacity: 0;
+      pointer-events: none;
+      background: var(--ink);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      transition: opacity .2s ease, transform .2s ease;
+      z-index: 40;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-photo { min-height: 330px; }
       .layout { grid-template-columns: 1fr; }
       .side { position: static; }
       .dish-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
-    @media (max-width: 640px) {
-      .app { width: min(100% - 18px, 1180px); padding-top: 8px; }
+    @media (max-width: 660px) {
+      .app { width: min(100% - 18px, 1180px); padding-top: 6px; }
       .topbar { align-items: flex-start; flex-direction: column; }
-      .actions { width: 100%; justify-content: stretch; }
-      .actions .btn { flex: 1 1 auto; }
-      .controls { grid-template-columns: 1fr; }
-      .dish-grid { grid-template-columns: 1fr; }
+      .actions { width: 100%; overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; padding-bottom: 2px; }
+      .hero { padding-top: 14px; }
+      .hero-photo { min-height: 280px; border-radius: 22px; }
+      .hero-actions .btn { flex: 1 1 auto; }
+      .toolbar { grid-template-columns: 1fr; }
+      .recommend-grid, .dish-grid, .stats-grid { grid-template-columns: 1fr; }
       .form { grid-template-columns: 1fr; }
-      .brand h1 { font-size: 25px; }
+      .member-row { grid-template-columns: repeat(2, 1fr); }
     }
 
     @media print {
-      body { background: #fff; }
-      .app { width: 100%; padding: 0; }
-      .topbar, .controls, .tabs, .side, .dish-actions, .toast { display: none !important; }
-      .dish-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .topbar, .hero, .side, .toolbar, .category-strip, .dish-actions { display: none !important; }
+      body { background: white; }
+      .dish-grid { grid-template-columns: repeat(2, 1fr); }
       .dish-card { box-shadow: none; break-inside: avoid; }
-      .dish-photo { aspect-ratio: 6 / 2; }
     }
   </style>
 </head>
-<body>
+<body class="customer-mode">
   <main class="app">
     <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark" aria-hidden="true">厨</div>
-        <div>
-          <h1>家庭私厨可点菜单</h1>
-          <p>早餐、晚餐、预约菜都在这里，家人点单，私厨安排。</p>
-        </div>
+      <div class="mini-brand">
+        <span class="mini-logo">🍳</span>
+        <span>Wenni私厨</span>
       </div>
       <div class="actions">
         <button class="btn secondary" id="customerViewBtn" type="button">家人点单</button>
         <button class="btn secondary" id="adminViewBtn" type="button">私厨后台</button>
-        <button class="btn secondary" id="cloudBtn" type="button">云端设置</button>
-        <button class="btn secondary" id="printBtn" type="button">打印菜单</button>
-        <button class="btn secondary" id="exportBtn" type="button">导出菜单</button>
-        <button class="btn secondary" id="importBtn" type="button">导入菜单</button>
-        <button class="btn red admin-only" id="addDishBtn" type="button">新增菜品</button>
+        <button class="btn secondary admin-only" id="cloudBtn" type="button">云端设置</button>
+        <button class="btn secondary admin-only" id="printBtn" type="button">打印</button>
+        <button class="btn secondary admin-only" id="exportBtn" type="button">导出</button>
+        <button class="btn secondary admin-only" id="importBtn" type="button">导入</button>
+        <button class="btn admin-only" id="addDishBtn" type="button">新增菜品</button>
       </div>
     </header>
 
-    <section class="panel controls" aria-label="菜单筛选">
-      <input class="searchbox" id="searchInput" placeholder="搜索菜名、食材、标签" />
-      <select class="select" id="sortSelect" aria-label="排序">
-        <option value="default">默认排序</option>
-        <option value="timeAsc">制作时间从短到长</option>
-        <option value="timeDesc">制作时间从长到短</option>
-        <option value="name">按菜名排序</option>
-      </select>
+    <section class="hero customer-only">
+      <div class="hero-copy">
+        <span class="eyebrow">今日现做 · 家人专享</span>
+        <h1>Wenni私厨</h1>
+        <p class="subtitle">早餐｜晚餐｜预约菜<br>家里人想吃什么，直接来这里点。</p>
+        <div class="hero-actions">
+          <a class="btn" href="#menuSection">开始点餐</a>
+          <a class="btn secondary" href="#recommendSection">看今日推荐</a>
+        </div>
+      </div>
+      <div class="hero-photo" aria-label="私厨菜品背景图">
+        <div class="hero-note">
+          <strong>今晚吃点热乎的</strong>
+          <span>1荤 + 1素 + 1汤，私厨来安排。</span>
+        </div>
+      </div>
     </section>
 
-    <nav class="tabs" id="tabs" aria-label="菜品分类"></nav>
+    <section class="section customer-only" id="recommendSection">
+      <div class="section-head">
+        <div>
+          <h2>🔥 今日推荐</h2>
+          <p>优先推荐招牌、孩子爱吃、最近适合安排的菜。</p>
+        </div>
+      </div>
+      <div class="recommend-grid" id="recommendGrid"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2 id="menuSection">菜单</h2>
+          <p>像点外卖一样选菜，提交后私厨后台会收到。</p>
+        </div>
+      </div>
+      <nav class="category-strip" id="tabs" aria-label="菜品分类"></nav>
+    </section>
 
     <section class="layout">
       <div>
+        <div class="toolbar">
+          <input class="field" id="searchInput" placeholder="搜索菜名、食材、标签" />
+          <select class="field" id="sortSelect" aria-label="排序">
+            <option value="default">默认排序</option>
+            <option value="timeAsc">时间从短到长</option>
+            <option value="timeDesc">时间从长到短</option>
+            <option value="name">按菜名排序</option>
+          </select>
+        </div>
         <div class="dish-grid" id="dishGrid"></div>
+
+        <section class="section admin-only admin-block">
+          <div class="section-head">
+            <div>
+              <h2>📊 本月统计</h2>
+              <p>看看谁最会点、哪道菜最受欢迎。</p>
+            </div>
+          </div>
+          <div class="stats-grid" id="statsGrid"></div>
+        </section>
+
+        <section class="section customer-only">
+          <div class="panel ai-box">
+            <h2>🤖 推荐今晚吃什么</h2>
+            <textarea class="field" id="ingredientInput" placeholder="输入家里现有食材，如：鸡蛋、番茄、牛肉、土豆"></textarea>
+            <button class="btn dark" id="aiRecommendBtn" type="button">生成推荐</button>
+            <div class="ai-result" id="aiResult"></div>
+          </div>
+        </section>
       </div>
 
-      <aside class="panel side">
-        <h2 id="sideTitle">今日点单</h2>
-        <div class="order-meta">
-          <input class="field" id="orderName" placeholder="点单人" />
-          <input class="field" id="mealTime" placeholder="希望开饭时间，如 18:30" />
-          <input class="field" id="peopleCount" placeholder="今天几个人吃，如 2人" value="2人" />
-          <textarea class="field" id="orderNote" placeholder="忌口、少油少盐、是否接受替换"></textarea>
-        </div>
-        <div class="cart-list" id="cartList"></div>
-        <div class="order-summary">
+      <aside class="side">
+        <section class="panel customer-only">
+          <h2>今日订单</h2>
+          <div class="member-row" id="memberRow"></div>
+          <div class="order-meta">
+            <input class="field" id="orderName" placeholder="点单人" />
+            <input class="field" id="mealTime" placeholder="希望开饭时间，如 18:30" />
+            <input class="field" id="peopleCount" placeholder="今天几个人吃，如 2人" value="2人" />
+            <textarea class="field" id="orderNote" placeholder="忌口、少油少盐、是否接受替换"></textarea>
+          </div>
+          <div class="cart-list" id="cartList"></div>
           <button class="btn green" id="submitOrderBtn" type="button">提交点单</button>
           <button class="btn secondary" id="shareOrderBtn" type="button">复制到微信</button>
           <button class="btn secondary" id="clearCartBtn" type="button">清空点单</button>
-        </div>
-        <section class="admin-orders admin-only">
-          <h2>今日订单</h2>
+        </section>
+
+        <section class="panel admin-only admin-block">
+          <h2>订单看板</h2>
           <div class="cart-list" id="orderList"></div>
           <button class="btn secondary" id="refreshOrdersBtn" type="button">刷新订单</button>
         </section>
@@ -551,9 +789,11 @@
         <label>
           分类
           <select class="field" id="dishCategory">
-            <option>招牌拿手菜</option>
+            <option>招牌菜</option>
             <option>快手菜</option>
-            <option>主食/早餐/夜宵</option>
+            <option>早餐</option>
+            <option>午餐</option>
+            <option>晚餐</option>
             <option>预约菜</option>
           </select>
         </label>
@@ -573,9 +813,13 @@
           标签
           <input class="field" id="dishTags" placeholder="用逗号分隔，如 孩子爱吃,减脂友好" />
         </label>
-        <label class="wide">
-          菜品图片地址
-          <input class="field" id="dishImage" placeholder="可粘贴图片链接；留空会使用默认图片" />
+        <label>
+          图片链接
+          <input class="field" id="dishImage" placeholder="可粘贴图片链接" />
+        </label>
+        <label>
+          上传图片
+          <input class="field" id="dishImageFile" type="file" accept="image/*" />
         </label>
         <label class="wide">
           点单备注
@@ -584,7 +828,7 @@
       </div>
       <div class="modal-actions">
         <button class="btn secondary" type="button" id="cancelBtn">取消</button>
-        <button class="btn red" type="submit">保存菜品</button>
+        <button class="btn" type="submit">保存菜品</button>
       </div>
     </form>
   </dialog>
@@ -604,14 +848,10 @@
           Supabase anon key
           <textarea class="field" id="cloudKey" placeholder="粘贴 anon public key"></textarea>
         </label>
-        <label class="wide">
-          <span>说明</span>
-          <textarea class="field" readonly>填好后，菜单和订单会保存到云端。家人用微信打开同一个网页链接，就能浏览菜单并提交点单。</textarea>
-        </label>
       </div>
       <div class="modal-actions">
         <button class="btn secondary" type="button" id="disableCloudBtn">关闭云端</button>
-        <button class="btn red" type="submit">保存并连接</button>
+        <button class="btn" type="submit">保存并连接</button>
       </div>
     </form>
   </dialog>
@@ -621,41 +861,57 @@
 
   <script src="config.js"></script>
   <script>
-    const STORAGE_KEY = "family_private_chef_menu_v1";
-    const ORDER_KEY = "family_private_chef_order_v1";
+    const STORAGE_KEY = "family_private_chef_menu_v2";
+    const OLD_STORAGE_KEY = "family_private_chef_menu_v1";
+    const ORDER_KEY = "family_private_chef_order_v2";
     const CLOUD_KEY = "family_private_chef_cloud_v1";
-    const VIEW_KEY = "family_private_chef_view_v1";
+    const VIEW_KEY = "family_private_chef_view_v2";
+    const IMAGE_BUCKET = "dish-images";
+
+    const familyMembers = [
+      { icon: "👨", name: "爸爸" },
+      { icon: "👩", name: "妈妈" },
+      { icon: "👧", name: "女儿" },
+      { icon: "👦", name: "儿子" }
+    ];
 
     const defaultDishes = [
-      { name: "菌菇炖鸡", category: "招牌拿手菜", time: "60-90分钟", minutes: 60, ingredients: "鸡腿/整鸡、香菇、蟹味菇/白玉菇、葱、姜", tags: ["营养热乎", "汤菜合一", "提前半天"], note: "适合晚餐，孩子和大人都能吃。" },
-      { name: "清炖排骨", category: "招牌拿手菜", time: "70-100分钟", minutes: 70, ingredients: "排骨、玉米/山药/冬瓜、葱、姜", tags: ["清淡", "孩子友好", "补蛋白"], note: "清淡营养，适合晚餐主菜或汤菜。" },
-      { name: "葱爆鲍鱼", category: "招牌拿手菜", time: "15-25分钟", minutes: 15, ingredients: "鲍鱼、大葱、姜、蒜、生抽", tags: ["孩子爱吃", "鲜香", "看食材"], note: "有鲍鱼时可点。" },
-      { name: "清蒸鱼", category: "招牌拿手菜", time: "20-30分钟", minutes: 20, ingredients: "鱼、葱、姜、蒸鱼豉油", tags: ["高蛋白", "减脂友好", "清淡"], note: "鱼刺需要注意，适合少油晚餐。" },
-      { name: "不辣鱼香肉丝", category: "招牌拿手菜", time: "25-35分钟", minutes: 25, ingredients: "猪里脊、木耳、胡萝卜、彩椒、葱姜蒜", tags: ["家庭不辣版", "下饭", "可当天"], note: "按家里口味做成不辣版。" },
-      { name: "红烧肉", category: "招牌拿手菜", time: "60-90分钟", minutes: 60, ingredients: "五花肉、葱、姜、冰糖、生抽、老抽", tags: ["孩子爱吃", "下饭", "少频繁点"], note: "孩子爱吃，但不建议天天点。" },
-      { name: "可乐鸡翅", category: "招牌拿手菜", time: "30-40分钟", minutes: 30, ingredients: "鸡翅、可乐、姜、生抽、老抽", tags: ["孩子友好", "工作日晚餐", "可当天"], note: "适合工作日晚餐。" },
-      { name: "西红柿炒蛋", category: "快手菜", time: "10-15分钟", minutes: 10, ingredients: "西红柿、鸡蛋、葱", tags: ["快手", "家常", "可临时点"], note: "孩子不爱鸡蛋时可少蛋多番茄。" },
-      { name: "凉拌白菜心", category: "快手菜", time: "10分钟", minutes: 10, ingredients: "白菜心、蒜、生抽/醋、香油", tags: ["清爽", "减脂友好", "素菜"], note: "适合晚餐素菜。" },
-      { name: "凉拌皮蛋", category: "快手菜", time: "10分钟", minutes: 10, ingredients: "皮蛋、蒜、醋、生抽、香油", tags: ["快手", "配菜", "可临时点"], note: "适合配主菜。" },
-      { name: "凉拌黄瓜粉皮", category: "快手菜", time: "15分钟", minutes: 15, ingredients: "黄瓜、粉皮、蒜、醋、生抽", tags: ["清爽", "饱腹", "减脂友好"], note: "减脂晚餐可少放芝麻酱。" },
-      { name: "青椒炒肉", category: "快手菜", time: "15-20分钟", minutes: 15, ingredients: "猪肉、青椒/彩椒、葱姜蒜", tags: ["快手", "不辣版", "下饭"], note: "不吃辣时用彩椒或不辣青椒。" },
-      { name: "火锅", category: "快手菜", time: "30-60分钟", minutes: 30, ingredients: "肉片、丸类、豆制品、青菜、菌菇、粉条", tags: ["周末", "清库存", "全家参与"], note: "适合周末或冰箱清库存。" },
-      { name: "包子", category: "主食/早餐/夜宵", time: "加热10-15分钟；现包2-3小时", minutes: 10, ingredients: "面粉、酵母、肉馅/菜馅", tags: ["早餐", "主食", "现包需预约"], note: "现成加热很快，现包建议预约。" },
-      { name: "水饺", category: "主食/早餐/夜宵", time: "现成10-15分钟；现包60-90分钟", minutes: 10, ingredients: "饺子皮/面粉、肉馅、蔬菜", tags: ["早餐", "晚餐", "孩子友好"], note: "可做早餐或晚餐主食。" },
-      { name: "疙瘩汤", category: "主食/早餐/夜宵", time: "15-25分钟", minutes: 15, ingredients: "面粉、西红柿/青菜、鸡蛋可选", tags: ["热乎", "好消化", "可当天"], note: "适合早餐或简单晚餐。" },
-      { name: "炝锅面", category: "主食/早餐/夜宵", time: "15-20分钟", minutes: 15, ingredients: "面条、葱、青菜、鸡蛋/肉丝可选", tags: ["快手", "早餐", "夜宵"], note: "热乎快手。" },
-      { name: "鸡蛋饼", category: "主食/早餐/夜宵", time: "10-15分钟", minutes: 10, ingredients: "面粉、鸡蛋、葱花", tags: ["早餐", "快手", "主食"], note: "孩子不爱蛋时可以做薄一点。" },
-      { name: "蒸蛋", category: "主食/早餐/夜宵", time: "10-15分钟", minutes: 10, ingredients: "鸡蛋、温水、生抽/香油", tags: ["营养", "可加虾仁", "早餐"], note: "可加虾仁提升营养。" },
-      { name: "烤地瓜", category: "主食/早餐/夜宵", time: "40-60分钟", minutes: 40, ingredients: "地瓜", tags: ["饱腹", "减脂友好", "需预留时间"], note: "适合早餐提前烤。" },
-      { name: "杂粮粥", category: "主食/早餐/夜宵", time: "40-70分钟", minutes: 40, ingredients: "大米、小米、燕麦、红豆/黑米", tags: ["早餐", "营养", "饱腹"], note: "预约煮更方便。" },
-      { name: "寿司", category: "主食/早餐/夜宵", time: "30-45分钟", minutes: 30, ingredients: "米饭、海苔、黄瓜、胡萝卜、肉松/火腿", tags: ["孩子友好", "便餐", "需准备"], note: "适合早餐或便餐。" },
-      { name: "三明治", category: "主食/早餐/夜宵", time: "10-15分钟", minutes: 10, ingredients: "吐司、生菜、鸡蛋/鸡胸肉/火腿、番茄", tags: ["快手", "早餐", "可少酱"], note: "减脂版可少酱。" },
-      { name: "卤牛肉", category: "预约菜", time: "2-3小时", minutes: 120, ingredients: "牛腱子、葱、姜、八角、桂皮、香叶、生抽、老抽", tags: ["预约", "高蛋白", "少频繁点"], note: "适合提前半天或前一晚。" },
-      { name: "番茄牛腩", category: "预约菜", time: "90-120分钟", minutes: 90, ingredients: "牛腩、番茄、洋葱、土豆/胡萝卜", tags: ["预约", "营养", "费时"], note: "营养但费时，适合周末。" },
-      { name: "羊汤", category: "预约菜", time: "2-3小时", minutes: 120, ingredients: "羊肉/羊骨、葱、姜、白萝卜", tags: ["预约", "周末", "少频繁点"], note: "适合周末或特别想吃时点。" }
-    ].map((dish, index) => ({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + index), image: "", ...dish }));
+      dish("菌菇炖鸡", "招牌菜", "60-90分钟", 60, "鸡腿/整鸡、香菇、蟹味菇/白玉菇、葱、姜", ["营养热乎", "汤菜合一", "晚餐"], "适合晚餐，孩子和大人都能吃。"),
+      dish("清炖排骨", "招牌菜", "70-100分钟", 70, "排骨、玉米/山药/冬瓜、葱、姜", ["清淡", "孩子友好", "补蛋白"], "清淡营养，适合晚餐主菜或汤菜。"),
+      dish("葱爆鲍鱼", "招牌菜", "15-25分钟", 15, "鲍鱼、大葱、姜、蒜、生抽", ["孩子爱吃", "鲜香", "看食材"], "有鲍鱼时可点。"),
+      dish("清蒸鱼", "晚餐", "20-30分钟", 20, "鱼、葱、姜、蒸鱼豉油", ["高蛋白", "减脂友好", "清淡"], "鱼刺需要注意，适合少油晚餐。"),
+      dish("不辣鱼香肉丝", "晚餐", "25-35分钟", 25, "猪里脊、木耳、胡萝卜、彩椒、葱姜蒜", ["家庭不辣版", "下饭", "可当天"], "按家里口味做成不辣版。"),
+      dish("红烧肉", "招牌菜", "60-90分钟", 60, "五花肉、葱、姜、冰糖、生抽、老抽", ["孩子爱吃", "招牌菜", "少频繁点"], "孩子爱吃，但不建议天天点。"),
+      dish("可乐鸡翅", "招牌菜", "30-40分钟", 30, "鸡翅、可乐、姜、生抽、老抽", ["孩子友好", "晚餐", "可当天"], "适合工作日晚餐。"),
+      dish("西红柿炒蛋", "快手菜", "10-15分钟", 10, "西红柿、鸡蛋、葱", ["快手", "家常", "可临时点"], "孩子不爱鸡蛋时可少蛋多番茄。"),
+      dish("凉拌白菜心", "快手菜", "10分钟", 10, "白菜心、蒜、生抽/醋、香油", ["清爽", "减脂友好", "素菜"], "适合晚餐素菜。"),
+      dish("凉拌皮蛋", "快手菜", "10分钟", 10, "皮蛋、蒜、醋、生抽、香油", ["快手", "配菜", "可临时点"], "适合配主菜。"),
+      dish("凉拌黄瓜粉皮", "快手菜", "15分钟", 15, "黄瓜、粉皮、蒜、醋、生抽", ["清爽", "饱腹", "减脂友好"], "减脂晚餐可少放芝麻酱。"),
+      dish("青椒炒肉", "快手菜", "15-20分钟", 15, "猪肉、青椒/彩椒、葱姜蒜", ["快手", "不辣版", "下饭"], "不吃辣时用彩椒或不辣青椒。"),
+      dish("火锅", "晚餐", "30-60分钟", 30, "肉片、丸类、豆制品、青菜、菌菇、粉条", ["周末", "清库存", "全家参与"], "适合周末或冰箱清库存。"),
+      dish("包子", "早餐", "加热10-15分钟；现包2-3小时", 10, "面粉、酵母、肉馅/菜馅", ["早餐", "主食", "现包需预约"], "现成加热很快，现包建议预约。"),
+      dish("水饺", "早餐", "现成10-15分钟；现包60-90分钟", 10, "饺子皮/面粉、肉馅、蔬菜", ["早餐", "晚餐", "孩子友好"], "可做早餐或晚餐主食。"),
+      dish("疙瘩汤", "早餐", "15-25分钟", 15, "面粉、西红柿/青菜、鸡蛋可选", ["热乎", "好消化", "可当天"], "适合早餐或简单晚餐。"),
+      dish("炝锅面", "早餐", "15-20分钟", 15, "面条、葱、青菜、鸡蛋/肉丝可选", ["快手", "早餐", "夜宵"], "热乎快手。"),
+      dish("鸡蛋饼", "早餐", "10-15分钟", 10, "面粉、鸡蛋、葱花", ["早餐", "快手", "主食"], "孩子不爱蛋时可以做薄一点。"),
+      dish("蒸蛋", "早餐", "10-15分钟", 10, "鸡蛋、温水、生抽/香油", ["营养", "可加虾仁", "早餐"], "可加虾仁提升营养。"),
+      dish("烤地瓜", "早餐", "40-60分钟", 40, "地瓜", ["饱腹", "减脂友好", "需预留时间"], "适合早餐提前烤。"),
+      dish("杂粮粥", "早餐", "40-70分钟", 40, "大米、小米、燕麦、红豆/黑米", ["早餐", "营养", "饱腹"], "预约煮更方便。"),
+      dish("寿司", "早餐", "30-45分钟", 30, "米饭、海苔、黄瓜、胡萝卜、肉松/火腿", ["孩子友好", "便餐", "需准备"], "适合早餐或便餐。"),
+      dish("三明治", "早餐", "10-15分钟", 10, "吐司、生菜、鸡蛋/鸡胸肉/火腿、番茄", ["快手", "早餐", "可少酱"], "减脂版可少酱。"),
+      dish("卤牛肉", "预约菜", "2-3小时", 120, "牛腱子、葱、姜、八角、桂皮、香叶、生抽、老抽", ["预约", "高蛋白", "少频繁点"], "适合提前半天或前一晚。"),
+      dish("番茄牛腩", "预约菜", "90-120分钟", 90, "牛腩、番茄、洋葱、土豆/胡萝卜", ["预约", "营养", "费时"], "营养但费时，适合周末。"),
+      dish("羊汤", "预约菜", "2-3小时", 120, "羊肉/羊骨、葱、姜、白萝卜", ["预约", "周末", "少频繁点"], "适合周末或特别想吃时点。")
+    ];
 
-    const categories = ["全部", "招牌拿手菜", "快手菜", "主食/早餐/夜宵", "预约菜"];
+    const categories = ["全部", "招牌菜", "早餐", "午餐", "晚餐", "快手菜", "预约菜"];
+    const statusOptions = [
+      { text: "已下单", icon: "📝" },
+      { text: "制作中", icon: "👩‍🍳" },
+      { text: "已完成", icon: "🍲" },
+      { text: "已领取", icon: "✅" }
+    ];
+
     let dishes = loadDishes();
     let cart = loadCart();
     let orders = [];
@@ -663,23 +919,41 @@
     let activeCategory = "全部";
     let editingId = null;
     let currentView = localStorage.getItem(VIEW_KEY) || "customer";
+    let selectedMember = localStorage.getItem("family_private_chef_member") || "妈妈";
 
-    const tabs = document.getElementById("tabs");
-    const dishGrid = document.getElementById("dishGrid");
-    const cartList = document.getElementById("cartList");
-    const searchInput = document.getElementById("searchInput");
-    const sortSelect = document.getElementById("sortSelect");
-    const toast = document.getElementById("toast");
-    const dialog = document.getElementById("dishDialog");
-    const cloudDialog = document.getElementById("cloudDialog");
-    const form = document.getElementById("dishForm");
-    const cloudForm = document.getElementById("cloudForm");
-    const fileInput = document.getElementById("fileInput");
-    const orderList = document.getElementById("orderList");
+    const $ = id => document.getElementById(id);
+
+    function dish(name, category, time, minutes, ingredients, tags, note) {
+      return { id: uuid(), name, category, time, minutes, ingredients, tags, note, image: "" };
+    }
+
+    function uuid() {
+      return crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random());
+    }
 
     function loadDishes() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : defaultDishes;
+      const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(OLD_STORAGE_KEY);
+      if (!saved) return defaultDishes;
+      try {
+        return JSON.parse(saved).map(normalizeDish);
+      } catch {
+        return defaultDishes;
+      }
+    }
+
+    function normalizeDish(item) {
+      const categoryMap = { "招牌拿手菜": "招牌菜", "主食/早餐/夜宵": "早餐" };
+      return {
+        id: item.id || uuid(),
+        name: item.name || "未命名菜品",
+        category: categoryMap[item.category] || item.category || "晚餐",
+        time: item.time || "待定",
+        minutes: Number(item.minutes || 30),
+        ingredients: item.ingredients || "",
+        tags: Array.isArray(item.tags) ? item.tags : [],
+        image: item.image || "",
+        note: item.note || ""
+      };
     }
 
     function saveDishes() {
@@ -698,12 +972,7 @@
     function loadCloud() {
       const fileConfig = window.PRIVATE_CHEF_CONFIG || {};
       if (fileConfig.supabaseUrl && fileConfig.supabaseAnonKey) {
-        return {
-          enabled: true,
-          url: fileConfig.supabaseUrl,
-          key: fileConfig.supabaseAnonKey,
-          source: "config"
-        };
+        return { enabled: true, url: fileConfig.supabaseUrl, key: fileConfig.supabaseAnonKey, source: "config" };
       }
       const saved = localStorage.getItem(CLOUD_KEY);
       return saved ? JSON.parse(saved) : { enabled: false, url: "", key: "" };
@@ -728,12 +997,27 @@
           ...(options.headers || {})
         }
       });
-      if (!response.ok) {
-        const message = await response.text();
-        throw new Error(message || `云端请求失败：${response.status}`);
-      }
+      if (!response.ok) throw new Error(await response.text());
       if (response.status === 204) return null;
       return response.json();
+    }
+
+    async function storageUpload(file) {
+      if (!isCloudReady() || !file) return "";
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const path = `${Date.now()}-${Math.random().toString(16).slice(2)}.${ext}`;
+      const response = await fetch(`${cloud.url.replace(/\/$/, "")}/storage/v1/object/${IMAGE_BUCKET}/${path}`, {
+        method: "POST",
+        headers: {
+          apikey: cloud.key,
+          Authorization: `Bearer ${cloud.key}`,
+          "Content-Type": file.type || "application/octet-stream",
+          "x-upsert": "true"
+        },
+        body: file
+      });
+      if (!response.ok) throw new Error(await response.text());
+      return `${cloud.url.replace(/\/$/, "")}/storage/v1/object/public/${IMAGE_BUCKET}/${path}`;
     }
 
     async function loadCloudDishes() {
@@ -744,13 +1028,12 @@
           dishes = rows.map(fromCloudDish);
           saveDishes();
           renderAll();
-          showToast("已连接云端菜单");
         } else if (Array.isArray(rows) && !rows.length && dishes.length) {
           await syncLocalDishesToCloud();
           showToast("已把本地菜单同步到云端");
         }
-      } catch (error) {
-        showToast("云端菜单读取失败，已使用本地菜单");
+      } catch {
+        showToast("云端菜单读取失败");
       }
     }
 
@@ -758,57 +1041,44 @@
       if (!isCloudReady()) {
         orders = [];
         renderOrders();
+        renderStats();
         return;
       }
       try {
-        const rows = await cloudRequest("orders?select=*&order=created_at.desc&limit=30");
+        const rows = await cloudRequest("orders?select=*&order=created_at.desc&limit=100");
         orders = Array.isArray(rows) ? rows : [];
         renderOrders();
-      } catch (error) {
+        renderStats();
+      } catch {
         showToast("订单读取失败");
       }
     }
 
-    function toCloudDish(dish) {
+    function toCloudDish(item) {
       return {
-        id: dish.id,
-        name: dish.name,
-        category: dish.category,
-        time: dish.time,
-        minutes: dish.minutes,
-        ingredients: dish.ingredients,
-        tags: dish.tags || [],
-        image: dish.image || "",
-        note: dish.note || ""
+        id: item.id,
+        name: item.name,
+        category: item.category,
+        time: item.time,
+        minutes: item.minutes,
+        ingredients: item.ingredients,
+        tags: item.tags || [],
+        image: item.image || "",
+        note: item.note || ""
       };
     }
 
     function fromCloudDish(row) {
-      return {
-        id: row.id,
-        name: row.name,
-        category: row.category,
-        time: row.time,
-        minutes: Number(row.minutes || 0),
-        ingredients: row.ingredients,
-        tags: row.tags || [],
-        image: row.image || "",
-        note: row.note || ""
-      };
+      return normalizeDish(row);
     }
 
-    async function upsertCloudDish(dish) {
+    async function upsertCloudDish(item) {
       if (!isCloudReady()) return;
       await cloudRequest("dishes", {
         method: "POST",
         headers: { Prefer: "resolution=merge-duplicates" },
-        body: JSON.stringify(toCloudDish(dish))
+        body: JSON.stringify(toCloudDish(item))
       });
-    }
-
-    async function deleteCloudDish(id) {
-      if (!isCloudReady()) return;
-      await cloudRequest(`dishes?id=eq.${encodeURIComponent(id)}`, { method: "DELETE" });
     }
 
     async function syncLocalDishesToCloud() {
@@ -820,65 +1090,104 @@
       });
     }
 
-    function defaultImage(dish) {
-      const colors = {
-        "招牌拿手菜": ["#b54a2e", "#f3b36c"],
-        "快手菜": ["#2f7a73", "#b7d6a8"],
-        "主食/早餐/夜宵": ["#8a5b2f", "#efd086"],
-        "预约菜": ["#5c4a7d", "#d0b5d8"]
+    async function deleteCloudDish(id) {
+      if (!isCloudReady()) return;
+      await cloudRequest(`dishes?id=eq.${encodeURIComponent(id)}`, { method: "DELETE" });
+    }
+
+    function defaultImage(item) {
+      const palette = {
+        "招牌菜": ["#ff7a45", "#ffd1a8"],
+        "快手菜": ["#2f8f6b", "#bfe8d6"],
+        "早餐": ["#d97706", "#ffe1a8"],
+        "晚餐": ["#8b5e3c", "#ffd7b8"],
+        "预约菜": ["#7c4d8f", "#e8c9f0"]
       };
-      const pair = colors[dish.category] || ["#b54a2e", "#e7c79a"];
-      const text = escapeXml(dish.name.slice(0, 6));
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${pair[0]}"/><stop offset="1" stop-color="${pair[1]}"/></linearGradient></defs><rect width="800" height="600" fill="url(#g)"/><circle cx="635" cy="118" r="110" fill="rgba(255,255,255,.18)"/><circle cx="120" cy="510" r="150" fill="rgba(255,255,255,.14)"/><rect x="145" y="168" width="510" height="265" rx="22" fill="rgba(255,250,241,.88)"/><text x="400" y="315" text-anchor="middle" dominant-baseline="middle" font-size="72" font-family="Microsoft YaHei, sans-serif" fill="#28231d">${text}</text><text x="400" y="385" text-anchor="middle" font-size="30" font-family="Microsoft YaHei, sans-serif" fill="#766d61">家庭私厨</text></svg>`;
+      const pair = palette[item.category] || palette["晚餐"];
+      const text = escapeXml(item.name.slice(0, 6));
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${pair[0]}"/><stop offset="1" stop-color="${pair[1]}"/></linearGradient></defs><rect width="800" height="600" fill="url(#g)"/><circle cx="650" cy="130" r="120" fill="rgba(255,255,255,.2)"/><circle cx="120" cy="515" r="155" fill="rgba(255,255,255,.16)"/><rect x="145" y="170" width="510" height="250" rx="32" fill="rgba(255,253,249,.88)"/><text x="400" y="300" text-anchor="middle" dominant-baseline="middle" font-size="68" font-family="Microsoft YaHei, sans-serif" fill="#2e241b">${text}</text><text x="400" y="372" text-anchor="middle" font-size="30" font-family="Microsoft YaHei, sans-serif" fill="#7a6758">Wenni私厨</text></svg>`;
       return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
     }
 
+    function renderMembers() {
+      $("memberRow").innerHTML = familyMembers.map(member => `
+        <button class="member ${selectedMember === member.name ? "active" : ""}" type="button" data-member="${member.name}">
+          ${member.icon}<br>${member.name}
+        </button>
+      `).join("");
+      $("orderName").value = selectedMember;
+    }
+
     function renderTabs() {
-      tabs.innerHTML = categories.map(category => {
-        const count = category === "全部" ? dishes.length : dishes.filter(d => d.category === category).length;
+      $("tabs").innerHTML = categories.map(category => {
+        const count = category === "全部" ? dishes.length : dishes.filter(item => item.category === category).length;
         return `<button class="tab ${activeCategory === category ? "active" : ""}" type="button" data-category="${category}">${category} ${count}</button>`;
       }).join("");
     }
 
     function getFilteredDishes() {
-      const query = searchInput.value.trim().toLowerCase();
-      let list = dishes.filter(dish => {
-        const inCategory = activeCategory === "全部" || dish.category === activeCategory;
-        const text = [dish.name, dish.category, dish.time, dish.ingredients, dish.note, ...(dish.tags || [])].join(" ").toLowerCase();
+      const query = $("searchInput").value.trim().toLowerCase();
+      let list = dishes.filter(item => {
+        const inCategory = activeCategory === "全部" || item.category === activeCategory;
+        const text = [item.name, item.category, item.time, item.ingredients, item.note, ...(item.tags || [])].join(" ").toLowerCase();
         return inCategory && (!query || text.includes(query));
       });
-
-      if (sortSelect.value === "timeAsc") list = list.sort((a, b) => a.minutes - b.minutes);
-      if (sortSelect.value === "timeDesc") list = list.sort((a, b) => b.minutes - a.minutes);
-      if (sortSelect.value === "name") list = list.sort((a, b) => a.name.localeCompare(b.name, "zh-CN"));
+      if ($("sortSelect").value === "timeAsc") list = list.sort((a, b) => a.minutes - b.minutes);
+      if ($("sortSelect").value === "timeDesc") list = list.sort((a, b) => b.minutes - a.minutes);
+      if ($("sortSelect").value === "name") list = list.sort((a, b) => a.name.localeCompare(b.name, "zh-CN"));
       return list;
+    }
+
+    function renderRecommend() {
+      const selected = [...dishes]
+        .sort((a, b) => scoreDish(b) - scoreDish(a))
+        .slice(0, 3);
+      $("recommendGrid").innerHTML = selected.map(item => `
+        <button class="recommend-card" type="button" data-order-id="${item.id}">
+          <img src="${escapeAttr(item.image || defaultImage(item))}" alt="${escapeAttr(item.name)}" onerror="this.src='${defaultImage(item)}'">
+          <span class="recommend-info">
+            <strong>${escapeHtml(item.name)}</strong>
+            <span>${escapeHtml(item.time)}｜${escapeHtml((item.tags || []).slice(0, 2).join(" · "))}</span>
+          </span>
+        </button>
+      `).join("");
+    }
+
+    function scoreDish(item) {
+      const tags = (item.tags || []).join(",");
+      let score = 0;
+      if (item.category === "招牌菜") score += 20;
+      if (item.category === "快手菜") score += 10;
+      if (tags.includes("孩子")) score += 14;
+      if (tags.includes("减脂")) score += 9;
+      if (tags.includes("预约")) score -= 5;
+      score += Math.max(0, 60 - item.minutes) / 10;
+      return score;
     }
 
     function renderDishes() {
       const list = getFilteredDishes();
       if (!list.length) {
-        dishGrid.innerHTML = `<div class="empty">没有找到菜品。可以换个关键词，或者新增一道菜。</div>`;
+        $("dishGrid").innerHTML = `<div class="empty">没有找到菜品。换个关键词，或者让私厨新增一道菜。</div>`;
         return;
       }
-
-      dishGrid.innerHTML = list.map(dish => `
+      $("dishGrid").innerHTML = list.map(item => `
         <article class="dish-card">
           <div class="dish-photo">
-            <img src="${escapeAttr(dish.image || defaultImage(dish))}" alt="${escapeAttr(dish.name)}" onerror="this.src='${defaultImage(dish)}'" />
-            <div class="badge-row">
-              ${(dish.tags || []).slice(0, 3).map(tag => `<span class="badge">${escapeHtml(tag)}</span>`).join("")}
-            </div>
+            <img src="${escapeAttr(item.image || defaultImage(item))}" alt="${escapeAttr(item.name)}" onerror="this.src='${defaultImage(item)}'">
+            <div class="badge-row">${(item.tags || []).slice(0, 3).map(tag => `<span class="badge">${escapeHtml(tag)}</span>`).join("")}</div>
           </div>
           <div class="dish-body">
             <div class="dish-title">
-              <h2>${escapeHtml(dish.name)}</h2>
-              <span class="time">${escapeHtml(dish.time)}</span>
+              <h3>${escapeHtml(item.name)}</h3>
+              <span class="stars">★★★★★</span>
             </div>
-            <div class="ingredients">${escapeHtml(dish.ingredients)}</div>
+            <div class="meta-line">⏰ ${escapeHtml(item.time)} · ${escapeHtml(item.category)}</div>
+            <div class="ingredients">🥬 ${escapeHtml(item.ingredients)}</div>
             <div class="dish-actions">
-              <button class="btn green" type="button" data-action="order" data-id="${dish.id}">点这道</button>
-              <button class="btn secondary icon" type="button" data-action="edit" data-id="${dish.id}" aria-label="编辑">✎</button>
-              <button class="btn secondary icon" type="button" data-action="delete" data-id="${dish.id}" aria-label="删除">×</button>
+              <button class="btn green" type="button" data-action="order" data-id="${item.id}">加入订单</button>
+              <button class="btn secondary icon admin-only" type="button" data-action="edit" data-id="${item.id}" aria-label="编辑">✎</button>
+              <button class="btn secondary icon admin-only" type="button" data-action="delete" data-id="${item.id}" aria-label="删除">×</button>
             </div>
           </div>
         </article>
@@ -887,10 +1196,10 @@
 
     function renderCart() {
       if (!cart.length) {
-        cartList.innerHTML = `<div class="empty">还没有点菜。晚餐建议 1荤 + 1素 + 1汤。</div>`;
+        $("cartList").innerHTML = `<div class="empty">还没有点菜。晚餐建议 1荤 + 1素 + 1汤。</div>`;
         return;
       }
-      cartList.innerHTML = cart.map(item => `
+      $("cartList").innerHTML = cart.map(item => `
         <div class="cart-item">
           <div>
             <strong>${escapeHtml(item.name)}</strong>
@@ -902,82 +1211,87 @@
     }
 
     function renderOrders() {
-      if (!orderList) return;
       if (!isCloudReady()) {
-        orderList.innerHTML = `<div class="empty">还没有连接云端。设置好云端后，这里会显示家人提交的订单。</div>`;
+        $("orderList").innerHTML = `<div class="empty">还没有连接云端。连接后这里会显示家人提交的订单。</div>`;
         return;
       }
       if (!orders.length) {
-        orderList.innerHTML = `<div class="empty">暂无订单。</div>`;
+        $("orderList").innerHTML = `<div class="empty">暂无订单。</div>`;
         return;
       }
-      orderList.innerHTML = orders.map(order => {
+      $("orderList").innerHTML = orders.map(order => {
         const items = Array.isArray(order.items) ? order.items.map(item => item.name).join("、") : "未记录菜品";
+        const status = order.status || "已下单";
+        const icon = statusOptions.find(item => item.text === status)?.icon || "📝";
         return `
           <article class="order-card">
+            <span class="status-pill">${icon} ${escapeHtml(status)}</span>
             <strong>${escapeHtml(order.customer_name || "家人")}｜${escapeHtml(order.people_count || "2人")}｜${escapeHtml(order.meal_time || "时间待定")}</strong>
             <p>${escapeHtml(items)}</p>
             <p>备注：${escapeHtml(order.note || "无")}</p>
-            <div class="status-row">
-              <select class="field" data-order-status="${order.id}">
-                ${["已收到", "准备中", "已完成"].map(status => `<option ${order.status === status ? "selected" : ""}>${status}</option>`).join("")}
-              </select>
-            </div>
+            <select class="field" data-order-status="${order.id}">
+              ${statusOptions.map(item => `<option value="${item.text}" ${status === item.text ? "selected" : ""}>${item.icon} ${item.text}</option>`).join("")}
+            </select>
           </article>
         `;
       }).join("");
     }
 
-    function renderAll() {
-      applyViewMode();
-      renderTabs();
-      renderDishes();
-      renderCart();
-      renderOrders();
+    function renderStats() {
+      const month = new Date().getMonth();
+      const monthOrders = orders.filter(order => new Date(order.created_at).getMonth() === month);
+      const dishCounts = new Map();
+      const memberCounts = new Map();
+      let notes = 0;
+      monthOrders.forEach(order => {
+        memberCounts.set(order.customer_name || "家人", (memberCounts.get(order.customer_name || "家人") || 0) + 1);
+        if (order.note) notes += 1;
+        (order.items || []).forEach(item => dishCounts.set(item.name, (dishCounts.get(item.name) || 0) + 1));
+      });
+      const topDish = [...dishCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || "暂无";
+      const topMember = [...memberCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || "暂无";
+      $("statsGrid").innerHTML = `
+        <div class="stat"><strong>${monthOrders.length}</strong><span>本月点单</span></div>
+        <div class="stat"><strong>${escapeHtml(topDish)}</strong><span>最受欢迎</span></div>
+        <div class="stat"><strong>${escapeHtml(topMember)}</strong><span>最爱点单</span></div>
+        <div class="stat"><strong>${dishCounts.size}</strong><span>被点过的菜</span></div>
+        <div class="stat"><strong>${notes}</strong><span>有备注订单</span></div>
+        <div class="stat"><strong>${dishes.length}</strong><span>菜单菜品数</span></div>
+      `;
     }
 
     function applyViewMode() {
       document.body.classList.toggle("admin-mode", currentView === "admin");
       document.body.classList.toggle("customer-mode", currentView !== "admin");
-      document.getElementById("customerViewBtn").classList.toggle("red", currentView !== "admin");
-      document.getElementById("adminViewBtn").classList.toggle("red", currentView === "admin");
+      $("customerViewBtn").classList.toggle("secondary", currentView === "admin");
+      $("adminViewBtn").classList.toggle("secondary", currentView !== "admin");
     }
 
-    function openDishDialog(dish) {
-      editingId = dish ? dish.id : null;
-      document.getElementById("dialogTitle").textContent = dish ? "编辑菜品" : "新增菜品";
-      document.getElementById("dishId").value = dish?.id || "";
-      document.getElementById("dishName").value = dish?.name || "";
-      document.getElementById("dishCategory").value = dish?.category || "招牌拿手菜";
-      document.getElementById("dishTime").value = dish?.time || "";
-      document.getElementById("dishMinutes").value = dish?.minutes || "";
-      document.getElementById("dishIngredients").value = dish?.ingredients || "";
-      document.getElementById("dishTags").value = (dish?.tags || []).join("，");
-      document.getElementById("dishImage").value = dish?.image || "";
-      document.getElementById("dishNote").value = dish?.note || "";
-      dialog.showModal();
+    function renderAll() {
+      applyViewMode();
+      renderMembers();
+      renderTabs();
+      renderRecommend();
+      renderDishes();
+      renderCart();
+      renderOrders();
+      renderStats();
+    }
+
+    function addToCart(item) {
+      cart.push({ id: uuid(), dishId: item.id, name: item.name, category: item.category, time: item.time, ingredients: item.ingredients });
+      saveCart();
+      renderCart();
+      showToast(`已加入订单：${item.name}`);
     }
 
     function buildOrderText() {
-      const name = document.getElementById("orderName").value.trim() || "家人";
-      const mealTime = document.getElementById("mealTime").value.trim() || "待定";
-      const people = document.getElementById("peopleCount").value.trim() || "2人";
-      const note = document.getElementById("orderNote").value.trim() || "无";
+      const name = $("orderName").value.trim() || selectedMember || "家人";
+      const mealTime = $("mealTime").value.trim() || "待定";
+      const people = $("peopleCount").value.trim() || "2人";
+      const note = $("orderNote").value.trim() || "无";
       const items = cart.map((item, index) => `${index + 1}. ${item.name}｜${item.time}｜${item.ingredients}`).join("\n");
-      return `【今日私厨点单】\n点单人：${name}\n用餐人数：${people}\n希望开饭时间：${mealTime}\n\n想点的菜：\n${items || "还没有选择菜品"}\n\n备注：${note}`;
-    }
-
-    async function copyOrShareOrder() {
-      const text = buildOrderText();
-      if (navigator.share) {
-        try {
-          await navigator.share({ title: "今日私厨点单", text });
-          showToast("已打开分享面板");
-          return;
-        } catch (error) {}
-      }
-      await copyText(text);
-      showToast("点单已复制，可以粘贴到微信");
+      return `【Wenni私厨点单】\n点单人：${name}\n用餐人数：${people}\n希望开饭时间：${mealTime}\n\n想点的菜：\n${items || "还没有选择菜品"}\n\n备注：${note}`;
     }
 
     async function submitOrder() {
@@ -991,12 +1305,12 @@
         return;
       }
       const payload = {
-        customer_name: document.getElementById("orderName").value.trim() || "家人",
-        meal_time: document.getElementById("mealTime").value.trim() || "待定",
-        people_count: document.getElementById("peopleCount").value.trim() || "2人",
-        note: document.getElementById("orderNote").value.trim() || "",
+        customer_name: $("orderName").value.trim() || selectedMember || "家人",
+        meal_time: $("mealTime").value.trim() || "待定",
+        people_count: $("peopleCount").value.trim() || "2人",
+        note: $("orderNote").value.trim() || "",
         items: cart,
-        status: "已收到"
+        status: "已下单"
       };
       try {
         await cloudRequest("orders", {
@@ -1009,9 +1323,9 @@
         renderCart();
         showToast("点单已提交给私厨");
         await loadCloudOrders();
-      } catch (error) {
-        showToast("提交失败，已复制点单到微信");
+      } catch {
         await copyText(buildOrderText());
+        showToast("提交失败，已复制到微信");
       }
     }
 
@@ -1024,9 +1338,98 @@
         });
         showToast("订单状态已更新");
         await loadCloudOrders();
-      } catch (error) {
+      } catch {
         showToast("状态更新失败");
       }
+    }
+
+    function openDishDialog(item) {
+      editingId = item ? item.id : null;
+      $("dialogTitle").textContent = item ? "编辑菜品" : "新增菜品";
+      $("dishId").value = item?.id || "";
+      $("dishName").value = item?.name || "";
+      $("dishCategory").value = item?.category || "招牌菜";
+      $("dishTime").value = item?.time || "";
+      $("dishMinutes").value = item?.minutes || "";
+      $("dishIngredients").value = item?.ingredients || "";
+      $("dishTags").value = (item?.tags || []).join("，");
+      $("dishImage").value = item?.image || "";
+      $("dishImageFile").value = "";
+      $("dishNote").value = item?.note || "";
+      $("dishDialog").showModal();
+    }
+
+    async function saveDishFromForm() {
+      const file = $("dishImageFile").files[0];
+      let image = $("dishImage").value.trim();
+      if (file) {
+        try {
+          image = await storageUpload(file);
+        } catch {
+          showToast("图片上传失败，菜品仍会保存");
+        }
+      }
+      const item = {
+        id: editingId || uuid(),
+        name: $("dishName").value.trim(),
+        category: $("dishCategory").value,
+        time: $("dishTime").value.trim(),
+        minutes: Number($("dishMinutes").value),
+        ingredients: $("dishIngredients").value.trim(),
+        tags: $("dishTags").value.split(/[，,]/).map(tag => tag.trim()).filter(Boolean),
+        image,
+        note: $("dishNote").value.trim()
+      };
+      if (editingId) dishes = dishes.map(dishItem => dishItem.id === editingId ? item : dishItem);
+      else dishes.unshift(item);
+      saveDishes();
+      try {
+        await upsertCloudDish(item);
+      } catch {
+        showToast("本地已保存，云端同步失败");
+      }
+      $("dishDialog").close();
+      renderAll();
+      showToast("菜品已保存");
+    }
+
+    function generateAiRecommend() {
+      const words = $("ingredientInput").value.split(/[，,\s、]+/).map(item => item.trim()).filter(Boolean);
+      if (!words.length) {
+        $("aiResult").innerHTML = `<div class="empty">先输入家里现有食材。</div>`;
+        return;
+      }
+      const matches = dishes.map(item => {
+        const text = `${item.name} ${item.ingredients} ${(item.tags || []).join(" ")}`;
+        const hit = words.filter(word => text.includes(word)).length;
+        return { item, hit };
+      }).filter(row => row.hit > 0).sort((a, b) => b.hit - a.hit || a.item.minutes - b.item.minutes).slice(0, 3);
+      if (!matches.length) {
+        $("aiResult").innerHTML = `<div class="empty">没有直接匹配的菜，可以点快手菜或让私厨发挥。</div>`;
+        return;
+      }
+      $("aiResult").innerHTML = matches.map(row => `
+        <button class="cart-item" type="button" data-order-id="${row.item.id}">
+          <div>
+            <strong>${escapeHtml(row.item.name)}</strong>
+            <span>匹配 ${row.hit} 个食材｜${escapeHtml(row.item.time)}</span>
+          </div>
+          <span>加入</span>
+        </button>
+      `).join("");
+    }
+
+    async function copyOrShareOrder() {
+      const text = buildOrderText();
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: "Wenni私厨点单", text });
+          showToast("已打开分享面板");
+          return;
+        } catch {}
+      }
+      await copyText(text);
+      showToast("点单已复制，可以粘贴到微信");
     }
 
     async function copyText(text) {
@@ -1046,21 +1449,20 @@
     }
 
     function exportMenu() {
-      const data = JSON.stringify(dishes, null, 2);
-      const blob = new Blob([data], { type: "application/json" });
+      const blob = new Blob([JSON.stringify(dishes, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "家庭私厨菜单.json";
+      a.download = "Wenni私厨菜单.json";
       a.click();
       URL.revokeObjectURL(url);
       showToast("菜单已导出");
     }
 
     function showToast(message) {
-      toast.textContent = message;
-      toast.classList.add("show");
-      setTimeout(() => toast.classList.remove("show"), 1800);
+      $("toast").textContent = message;
+      $("toast").classList.add("show");
+      setTimeout(() => $("toast").classList.remove("show"), 1800);
     }
 
     function escapeHtml(value) {
@@ -1075,42 +1477,45 @@
       return escapeHtml(value).replace(/`/g, "&#096;");
     }
 
-    tabs.addEventListener("click", event => {
+    $("tabs").addEventListener("click", event => {
       const button = event.target.closest("[data-category]");
       if (!button) return;
       activeCategory = button.dataset.category;
       renderAll();
     });
 
-    dishGrid.addEventListener("click", event => {
-      const button = event.target.closest("[data-action]");
-      if (!button) return;
-      const dish = dishes.find(item => item.id === button.dataset.id);
-      if (!dish) return;
-
-      if (button.dataset.action === "order") {
-        cart.push({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), dishId: dish.id, name: dish.name, category: dish.category, time: dish.time, ingredients: dish.ingredients });
-        saveCart();
-        renderCart();
-        showToast(`已加入点单：${dish.name}`);
-      }
-
-      if (button.dataset.action === "edit") {
-        openDishDialog(dish);
-      }
-
-      if (button.dataset.action === "delete") {
-        if (confirm(`确定删除「${dish.name}」吗？`)) {
-          dishes = dishes.filter(item => item.id !== dish.id);
-          saveDishes();
-          deleteCloudDish(dish.id).catch(() => showToast("云端删除失败，本地已删除"));
-          renderAll();
-          showToast("菜品已删除");
-        }
+    document.addEventListener("click", event => {
+      const orderButton = event.target.closest("[data-order-id]");
+      if (orderButton) {
+        const item = dishes.find(dishItem => dishItem.id === orderButton.dataset.orderId);
+        if (item) addToCart(item);
       }
     });
 
-    cartList.addEventListener("click", event => {
+    $("dishGrid").addEventListener("click", event => {
+      const button = event.target.closest("[data-action]");
+      if (!button) return;
+      const item = dishes.find(dishItem => dishItem.id === button.dataset.id);
+      if (!item) return;
+      if (button.dataset.action === "order") addToCart(item);
+      if (button.dataset.action === "edit") openDishDialog(item);
+      if (button.dataset.action === "delete" && confirm(`确定删除「${item.name}」吗？`)) {
+        dishes = dishes.filter(dishItem => dishItem.id !== item.id);
+        saveDishes();
+        deleteCloudDish(item.id).catch(() => showToast("云端删除失败，本地已删除"));
+        renderAll();
+      }
+    });
+
+    $("memberRow").addEventListener("click", event => {
+      const button = event.target.closest("[data-member]");
+      if (!button) return;
+      selectedMember = button.dataset.member;
+      localStorage.setItem("family_private_chef_member", selectedMember);
+      renderMembers();
+    });
+
+    $("cartList").addEventListener("click", event => {
       const button = event.target.closest("[data-remove]");
       if (!button) return;
       cart = cart.filter(item => item.id !== button.dataset.remove);
@@ -1118,111 +1523,86 @@
       renderCart();
     });
 
-    form.addEventListener("submit", async event => {
+    $("dishForm").addEventListener("submit", async event => {
       event.preventDefault();
-      const dish = {
-        id: editingId || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())),
-        name: document.getElementById("dishName").value.trim(),
-        category: document.getElementById("dishCategory").value,
-        time: document.getElementById("dishTime").value.trim(),
-        minutes: Number(document.getElementById("dishMinutes").value),
-        ingredients: document.getElementById("dishIngredients").value.trim(),
-        tags: document.getElementById("dishTags").value.split(/[，,]/).map(tag => tag.trim()).filter(Boolean),
-        image: document.getElementById("dishImage").value.trim(),
-        note: document.getElementById("dishNote").value.trim()
-      };
-
-      if (editingId) {
-        dishes = dishes.map(item => item.id === editingId ? dish : item);
-      } else {
-        dishes.unshift(dish);
-      }
-      saveDishes();
-      try {
-        await upsertCloudDish(dish);
-      } catch (error) {
-        showToast("本地已保存，云端同步失败");
-      }
-      dialog.close();
-      renderAll();
-      showToast("菜品已保存");
+      await saveDishFromForm();
     });
 
-    cloudForm.addEventListener("submit", async event => {
+    $("cloudForm").addEventListener("submit", async event => {
       event.preventDefault();
-      cloud = {
-        enabled: true,
-        url: document.getElementById("cloudUrl").value.trim(),
-        key: document.getElementById("cloudKey").value.trim()
-      };
+      cloud = { enabled: true, url: $("cloudUrl").value.trim(), key: $("cloudKey").value.trim() };
       saveCloud();
-      cloudDialog.close();
+      $("cloudDialog").close();
       await loadCloudDishes();
       await loadCloudOrders();
       showToast("云端设置已保存");
     });
 
-    fileInput.addEventListener("change", event => {
+    $("fileInput").addEventListener("change", event => {
       const file = event.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = () => {
         try {
-          const imported = JSON.parse(reader.result);
-          if (!Array.isArray(imported)) throw new Error("菜单格式不正确");
-          dishes = imported.map((dish, index) => ({ id: dish.id || String(Date.now() + index), tags: dish.tags || [], image: dish.image || "", ...dish }));
+          dishes = JSON.parse(reader.result).map(normalizeDish);
           saveDishes();
           renderAll();
           showToast("菜单已导入");
-        } catch (error) {
+        } catch {
           showToast("导入失败，请检查文件");
         }
       };
       reader.readAsText(file);
-      fileInput.value = "";
+      $("fileInput").value = "";
     });
 
-    document.getElementById("addDishBtn").addEventListener("click", () => openDishDialog());
-    document.getElementById("closeDialogBtn").addEventListener("click", () => dialog.close());
-    document.getElementById("cancelBtn").addEventListener("click", () => dialog.close());
-    document.getElementById("cloudBtn").addEventListener("click", () => {
-      document.getElementById("cloudUrl").value = cloud.url || "";
-      document.getElementById("cloudKey").value = cloud.key || "";
-      cloudDialog.showModal();
+    $("orderList").addEventListener("change", event => {
+      const select = event.target.closest("[data-order-status]");
+      if (!select) return;
+      updateOrderStatus(select.dataset.orderStatus, select.value);
     });
-    document.getElementById("closeCloudBtn").addEventListener("click", () => cloudDialog.close());
-    document.getElementById("disableCloudBtn").addEventListener("click", () => {
-      cloud = { enabled: false, url: "", key: "" };
-      saveCloud();
-      cloudDialog.close();
-      renderAll();
-      showToast("已关闭云端模式");
-    });
-    document.getElementById("customerViewBtn").addEventListener("click", () => {
+
+    $("customerViewBtn").addEventListener("click", () => {
       currentView = "customer";
       localStorage.setItem(VIEW_KEY, currentView);
       renderAll();
     });
-    document.getElementById("adminViewBtn").addEventListener("click", async () => {
+
+    $("adminViewBtn").addEventListener("click", async () => {
       currentView = "admin";
       localStorage.setItem(VIEW_KEY, currentView);
       renderAll();
       await loadCloudOrders();
     });
-    document.getElementById("submitOrderBtn").addEventListener("click", submitOrder);
-    document.getElementById("shareOrderBtn").addEventListener("click", copyOrShareOrder);
-    document.getElementById("clearCartBtn").addEventListener("click", () => { cart = []; saveCart(); renderCart(); });
-    document.getElementById("refreshOrdersBtn").addEventListener("click", loadCloudOrders);
-    orderList.addEventListener("change", event => {
-      const select = event.target.closest("[data-order-status]");
-      if (!select) return;
-      updateOrderStatus(select.dataset.orderStatus, select.value);
+
+    $("cloudBtn").addEventListener("click", () => {
+      $("cloudUrl").value = cloud.url || "";
+      $("cloudKey").value = cloud.key || "";
+      $("cloudDialog").showModal();
     });
-    document.getElementById("printBtn").addEventListener("click", () => window.print());
-    document.getElementById("exportBtn").addEventListener("click", exportMenu);
-    document.getElementById("importBtn").addEventListener("click", () => fileInput.click());
-    searchInput.addEventListener("input", renderDishes);
-    sortSelect.addEventListener("change", renderDishes);
+
+    $("disableCloudBtn").addEventListener("click", () => {
+      cloud = { enabled: false, url: "", key: "" };
+      saveCloud();
+      $("cloudDialog").close();
+      renderAll();
+      showToast("已关闭云端模式");
+    });
+
+    $("addDishBtn").addEventListener("click", () => openDishDialog());
+    $("closeDialogBtn").addEventListener("click", () => $("dishDialog").close());
+    $("cancelBtn").addEventListener("click", () => $("dishDialog").close());
+    $("closeCloudBtn").addEventListener("click", () => $("cloudDialog").close());
+    $("submitOrderBtn").addEventListener("click", submitOrder);
+    $("shareOrderBtn").addEventListener("click", copyOrShareOrder);
+    $("clearCartBtn").addEventListener("click", () => { cart = []; saveCart(); renderCart(); });
+    $("refreshOrdersBtn").addEventListener("click", loadCloudOrders);
+    $("printBtn").addEventListener("click", () => window.print());
+    $("exportBtn").addEventListener("click", exportMenu);
+    $("importBtn").addEventListener("click", () => $("fileInput").click());
+    $("searchInput").addEventListener("input", renderDishes);
+    $("sortSelect").addEventListener("change", renderDishes);
+    $("aiRecommendBtn").addEventListener("click", generateAiRecommend);
 
     renderAll();
     loadCloudDishes().then(loadCloudOrders);
